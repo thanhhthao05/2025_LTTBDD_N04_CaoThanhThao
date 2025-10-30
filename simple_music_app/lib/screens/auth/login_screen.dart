@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
-import '../home/home_screen.dart';
+import '../main_screen.dart';
+import '../auth/auth_state.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController emailController =
+        TextEditingController();
+    final TextEditingController passwordController =
+        TextEditingController();
+
     return Scaffold(
       body: Stack(
         children: [
           Positioned.fill(
             child: Image.asset(
-              'imgs/anh_nen.png', // ảnh nền
+              'imgs/anh_nen.png',
               fit: BoxFit.cover,
             ),
           ),
 
-          // Form đăng nhập nằm giữa
           Center(
             child: Container(
               width: 320,
@@ -55,6 +60,7 @@ class LoginScreen extends StatelessWidget {
 
                   // Email field
                   TextField(
+                    controller: emailController,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
                         Icons.email_outlined,
@@ -73,6 +79,7 @@ class LoginScreen extends StatelessWidget {
 
                   // Password field
                   TextField(
+                    controller: passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -96,13 +103,26 @@ class LoginScreen extends StatelessWidget {
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        // đăng nhập thành công -> chuyển sang HomeScreen
-                        Navigator.pushReplacement(
+                        // Cập nhật trạng thái đăng nhập
+                        AuthState.isLoggedIn.value =
+                            true;
+                        AuthState.email =
+                            emailController.text
+                                .trim();
+                        AuthState.username =
+                            emailController.text
+                                .split('@')
+                                .first; //
+
+                        Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const HomeScreen(),
+                                const MainScreen(
+                                  initialIndex: 3,
+                                ),
                           ),
+                          (route) => false,
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -133,7 +153,7 @@ class LoginScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              const RegisterScreen(),
+                              RegisterScreen(),
                         ),
                       );
                     },

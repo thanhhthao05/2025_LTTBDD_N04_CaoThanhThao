@@ -41,7 +41,7 @@ class SearchScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
-          "Search",
+          "Tìm kiếm",
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
@@ -67,8 +67,7 @@ class SearchScreen extends StatelessWidget {
             // 🔍 Ô tìm kiếm
             TextField(
               decoration: InputDecoration(
-                hintText:
-                    "What do you want to listen to?",
+                hintText: "Bạn muốn nghe gì?",
                 prefixIcon: const Icon(Icons.search),
                 filled: true,
                 fillColor: Colors.grey[200],

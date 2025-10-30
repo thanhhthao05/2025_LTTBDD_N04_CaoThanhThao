@@ -98,7 +98,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
-          "Hello",
+          "Xin chào",
           style: TextStyle(
             color: Colors.black,
             fontSize: 26,
@@ -128,7 +128,7 @@ class HomeScreen extends StatelessWidget {
             Row(
               children: [
                 FilterChip(
-                  label: const Text("Music"),
+                  label: const Text("Âm nhạc"),
                   selected: true,
                   backgroundColor: Colors.white,
                   selectedColor: Colors.blueAccent
@@ -141,7 +141,7 @@ class HomeScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 FilterChip(
                   label: const Text(
-                    "Podcasts & Shows",
+                    "Podcast & chương trình",
                   ),
                   selected: false,
                   backgroundColor: Colors.white,

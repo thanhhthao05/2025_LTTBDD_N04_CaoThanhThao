@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'home/home_screen.dart';
 import 'search/search_screen.dart';
+import 'library/library_screen.dart';
+import 'account/account_screen.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final int initialIndex;
+  const MainScreen({
+    super.key,
+    this.initialIndex = 0,
+  }); // Mặc định chọn tab
 
   @override
   State<MainScreen> createState() =>
@@ -11,12 +17,21 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  int _selectedIndex = 1; // Mặc định chọn tab Search
+  late int _selectedIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget
+        .initialIndex; // Khởi tạo chỉ số tab được chọn
+  }
 
   // Danh sách các màn hình
   final List<Widget> _screens = const [
     HomeScreen(),
     SearchScreen(),
+    LibraryScreen(),
+    AccountScreen(),
   ];
 
   void _onItemTapped(int index) {

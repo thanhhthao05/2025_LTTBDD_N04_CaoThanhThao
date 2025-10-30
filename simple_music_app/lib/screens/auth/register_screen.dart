@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
-import '../home/home_screen.dart';
+import '../main_screen.dart';
+import '../auth/auth_state.dart';
 
 class RegisterScreen extends StatelessWidget {
-  const RegisterScreen({super.key});
+  RegisterScreen({super.key});
+
+  // Controllers cho các ô nhập liệu
+  final TextEditingController nameController =
+      TextEditingController();
+  final TextEditingController emailController =
+      TextEditingController();
+  final TextEditingController passwordController =
+      TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -11,7 +20,7 @@ class RegisterScreen extends StatelessWidget {
         children: [
           Positioned.fill(
             child: Image.asset(
-              'imgs/anh_nen.png', //ảnh nền
+              'imgs/anh_nen.png',
               fit: BoxFit.cover,
             ),
           ),
@@ -54,6 +63,8 @@ class RegisterScreen extends StatelessWidget {
 
                   // Ô nhập Tên
                   TextField(
+                    controller:
+                        nameController, // ✅ GẮN controller
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
                         Icons.person_outline,
@@ -72,6 +83,8 @@ class RegisterScreen extends StatelessWidget {
 
                   // Ô nhập Email
                   TextField(
+                    controller:
+                        emailController, // ✅ GẮN controller
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
                         Icons.email_outlined,
@@ -90,6 +103,8 @@ class RegisterScreen extends StatelessWidget {
 
                   // Ô nhập Mật khẩu
                   TextField(
+                    controller:
+                        passwordController, // ✅ GẮN controller
                     obscureText: true,
                     decoration: InputDecoration(
                       prefixIcon: const Icon(
@@ -107,19 +122,36 @@ class RegisterScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 25),
 
-                  // Nút đăng ký
+                  // 🔘 Nút đăng ký
                   SizedBox(
                     width: double.infinity,
                     height: 50,
                     child: ElevatedButton(
                       onPressed: () {
-                        // đăng ký thành công -> chuyển sang HomeScreen
-                        Navigator.pushReplacement(
+                        // ✅ Cập nhật thông tin user khi đăng ký
+                        final name = nameController
+                            .text
+                            .trim();
+                        final email = emailController
+                            .text
+                            .trim();
+
+                        AuthState.username =
+                            name.isNotEmpty
+                            ? name
+                            : email;
+                        AuthState.isLoggedIn.value =
+                            true;
+                        // 🔄 Chuyển đến MainScreen và xoá hết lịch sử
+                        Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
                             builder: (context) =>
-                                const HomeScreen(),
+                                const MainScreen(
+                                  initialIndex: 3,
+                                ),
                           ),
+                          (route) => false,
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -145,7 +177,6 @@ class RegisterScreen extends StatelessWidget {
 
                   const SizedBox(height: 15),
 
-                  // Chuyển sang đăng nhập
                   GestureDetector(
                     onTap: () {
                       Navigator.pop(
