@@ -49,7 +49,12 @@ class _MainScreenState extends State<MainScreen> {
             .fixed, //  hiển thị 4 icon đều nhau, giãn cân đối
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: const Color.fromARGB(
+          255,
+          253,
+          119,
+          177,
+        ),
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
         items: const [

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import './notifications/whats_new_screen.dart';
+import './recent/recently_played_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -34,12 +36,12 @@ class HomeScreen extends StatelessWidget {
       },
       {
         'title': 'Perfect',
-        'artist': 'Ed Sheeran',
+        'artist': 'Shiki',
         'img': 'imgs/Perfect.jpg',
       },
       {
         'title': 'Đa Nghi',
-        'artist': 'Various Artists',
+        'artist': 'Anh Trai Say Hi 2',
         'img': 'imgs/Đa_Nghi.jpg',
       },
     ];
@@ -47,7 +49,7 @@ class HomeScreen extends StatelessWidget {
     // 🎧 Nghe gần đây
     final ngheGanDay = [
       {
-        'title': 'HIEUTHUHAI',
+        'title': 'Không Thể Say',
         'img': 'imgs/HIEUTHUHAI.jpg',
       },
       {
@@ -98,24 +100,36 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         elevation: 0,
         title: const Text(
-          "Xin chào",
+          'Xin chào',
           style: TextStyle(
             color: Colors.black,
-            fontSize: 26,
+            fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: const [
-          Icon(
-            Icons.notifications_none,
-            color: Colors.black,
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.notifications_none,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      const WhatsNewScreen(),
+                ),
+              );
+            },
           ),
-          SizedBox(width: 15),
-          Icon(
-            Icons.settings_outlined,
-            color: Colors.black,
+          IconButton(
+            icon: const Icon(
+              Icons.settings_outlined,
+              color: Colors.black,
+            ),
+            onPressed: () {},
           ),
-          SizedBox(width: 15),
         ],
       ),
 
@@ -124,15 +138,19 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🔘 Thanh chọn Music / Podcasts
+            // 🔘 Thanh chọn Music / Album
             Row(
               children: [
                 FilterChip(
                   label: const Text("Âm nhạc"),
                   selected: true,
                   backgroundColor: Colors.white,
-                  selectedColor: Colors.blueAccent
-                      .withOpacity(0.1),
+                  selectedColor: const Color.fromARGB(
+                    255,
+                    253,
+                    119,
+                    177,
+                  ).withOpacity(0.1),
                   labelStyle: const TextStyle(
                     color: Colors.black,
                   ),
@@ -140,9 +158,7 @@ class HomeScreen extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 FilterChip(
-                  label: const Text(
-                    "Podcast & chương trình",
-                  ),
+                  label: const Text("Album"),
                   selected: false,
                   backgroundColor: Colors.white,
                   labelStyle: const TextStyle(
@@ -182,12 +198,22 @@ class HomeScreen extends StatelessWidget {
                       },
                       icon: const Icon(
                         Icons.play_circle_fill,
-                        color: Colors.blue,
+                        color: const Color.fromARGB(
+                          255,
+                          253,
+                          119,
+                          177,
+                        ),
                       ),
                       label: const Text(
                         "Phát tất cả",
                         style: TextStyle(
-                          color: Colors.blue,
+                          color: const Color.fromARGB(
+                            255,
+                            253,
+                            119,
+                            177,
+                          ),
                         ),
                       ),
                     ),
@@ -205,7 +231,12 @@ class HomeScreen extends StatelessWidget {
                       },
                       icon: const Icon(
                         Icons.refresh,
-                        color: Colors.blue,
+                        color: const Color.fromARGB(
+                          255,
+                          253,
+                          119,
+                          177,
+                        ),
                       ),
                     ),
                   ],
@@ -339,20 +370,33 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 30),
 
             // 🕓 Nghe gần đây
-            Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
-              children: const [
-                Text(
-                  "Nghe gần đây",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+            // 🕓 Nghe gần đây
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const RecentlyPlayedScreen(),
                   ),
-                ),
-                Icon(Icons.chevron_right),
-              ],
+                );
+              },
+              child: Row(
+                mainAxisAlignment:
+                    MainAxisAlignment.spaceBetween,
+                children: const [
+                  Text(
+                    "Nghe gần đây",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Icon(Icons.chevron_right),
+                ],
+              ),
             ),
+
             const SizedBox(height: 10),
 
             SizedBox(
