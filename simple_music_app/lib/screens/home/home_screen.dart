@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import './notifications/whats_new_screen.dart';
-import './recent/recently_played_screen.dart';
+import '../../player/recently_played_screen.dart';
+import '../../player/song_model.dart';
+import '../../player/player_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -62,18 +64,12 @@ class HomeScreen extends StatelessWidget {
     ];
 
     final hot = [
-      {
-        'title': 'Mashup Nhạc Việt',
-        'img': 'imgs/Mashup_Nhạc_Việt.jpg',
-      },
+      {'title': 'APT', 'img': 'imgs/Charts_Asia.jpg'},
+      {'title': '3107 3', 'img': 'imgs/3107_3.jpg'},
       {'title': 'Cupid', 'img': 'imgs/cupid.jpg'},
       {
         'title': 'Ain’t My Fault',
         'img': 'imgs/aint_my_fault.jpg',
-      },
-      {
-        'title': 'V-Pop Gây Bão',
-        'img': 'imgs/V_Pop_Gây_Bão.jpg',
       },
     ];
 
@@ -83,14 +79,20 @@ class HomeScreen extends StatelessWidget {
         'img': 'imgs/Nhạc_Lofi_Chill.jpg',
       },
       {
+        'title': 'Mashup Nhạc Việt',
+        'img': 'imgs/Mashup_Nhạc_Việt.jpg',
+      },
+      {
         'title': 'Nhạc Buồn',
         'img': 'imgs/Nhạc_Buồn.jpg',
       },
-      {'title': 'APT', 'img': 'imgs/Charts_Asia.jpg'},
-      {'title': '3107 3', 'img': 'imgs/3107_3.jpg'},
       {
         'title': 'Playlist này Chill Phết',
         'img': 'imgs/Playlist_này_Chill_Phết.jpg',
+      },
+      {
+        'title': 'V-Pop Gây Bão',
+        'img': 'imgs/V_Pop_Gây_Bão.jpg',
       },
     ];
 
@@ -122,13 +124,6 @@ class HomeScreen extends StatelessWidget {
                 ),
               );
             },
-          ),
-          IconButton(
-            icon: const Icon(
-              Icons.settings_outlined,
-              color: Colors.black,
-            ),
-            onPressed: () {},
           ),
         ],
       ),
@@ -272,91 +267,111 @@ class HomeScreen extends StatelessWidget {
 
                           final song =
                               goiYBaiHat[index];
-                          return Container(
-                            width: 180,
-                            height:
-                                80, // Chiều cao mỗi mục
-                            margin: const EdgeInsets.symmetric(
-                              vertical: 6,
-                            ), // Khoảng cách giữa các mục
-                            decoration: BoxDecoration(
-                              color: Colors.grey[100],
-                              borderRadius:
-                                  BorderRadius.circular(
-                                    12,
-                                  ),
-                            ),
-                            child: Row(
-                              crossAxisAlignment:
-                                  CrossAxisAlignment
-                                      .center,
-                              children: [
-                                const SizedBox(
-                                  width: 6,
-                                ),
-                                ClipRRect(
-                                  borderRadius:
-                                      BorderRadius.circular(
-                                        8,
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      PlayerScreen(
+                                        songs:
+                                            goiYBaiHat,
+                                        currentIndex:
+                                            index,
                                       ),
-                                  child: Image.asset(
-                                    song['img']!,
-                                    height: 60,
-                                    width: 60,
-                                    fit: BoxFit.cover,
+                                ),
+                              );
+                            },
+                            child: Container(
+                              width: 180,
+                              height: 80,
+                              margin:
+                                  const EdgeInsets.symmetric(
+                                    vertical: 6,
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment
-                                            .center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment
-                                            .start,
-                                    children: [
-                                      Text(
-                                        song['title']!,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight:
-                                              FontWeight
-                                                  .w600,
+                              decoration: BoxDecoration(
+                                color:
+                                    Colors.grey[100],
+                                borderRadius:
+                                    BorderRadius.circular(
+                                      12,
+                                    ),
+                              ),
+                              child: Row(
+                                crossAxisAlignment:
+                                    CrossAxisAlignment
+                                        .center,
+                                children: [
+                                  const SizedBox(
+                                    width: 6,
+                                  ),
+                                  ClipRRect(
+                                    borderRadius:
+                                        BorderRadius.circular(
+                                          8,
                                         ),
-                                        overflow:
-                                            TextOverflow
-                                                .ellipsis,
-                                      ),
-                                      const SizedBox(
-                                        height: 3,
-                                      ),
-                                      Text(
-                                        song['artist']!,
-                                        style: const TextStyle(
-                                          fontSize: 12,
-                                          color: Colors
-                                              .grey,
-                                        ),
-                                        overflow:
-                                            TextOverflow
-                                                .ellipsis,
-                                      ),
-                                    ],
+                                    child: Image.asset(
+                                      song['img']!,
+                                      height: 60,
+                                      width: 60,
+                                      fit:
+                                          BoxFit.cover,
+                                    ),
                                   ),
-                                ),
-                                const Icon(
-                                  Icons.more_vert,
-                                  color:
-                                      Colors.black54,
-                                  size: 18,
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                              ],
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment
+                                              .center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment
+                                              .start,
+                                      children: [
+                                        Text(
+                                          song['title']!,
+                                          style: const TextStyle(
+                                            fontSize:
+                                                14,
+                                            fontWeight:
+                                                FontWeight
+                                                    .w600,
+                                          ),
+                                          overflow:
+                                              TextOverflow
+                                                  .ellipsis,
+                                        ),
+                                        const SizedBox(
+                                          height: 3,
+                                        ),
+                                        Text(
+                                          song['artist']!,
+                                          style: const TextStyle(
+                                            fontSize:
+                                                12,
+                                            color: Colors
+                                                .grey,
+                                          ),
+                                          overflow:
+                                              TextOverflow
+                                                  .ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const Icon(
+                                    Icons.more_vert,
+                                    color:
+                                        Colors.black54,
+                                    size: 18,
+                                  ),
+                                  const SizedBox(
+                                    width: 8,
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         }),
@@ -368,8 +383,6 @@ class HomeScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 30),
-
-            // 🕓 Nghe gần đây
             // 🕓 Nghe gần đây
             GestureDetector(
               onTap: () {
@@ -410,37 +423,51 @@ class HomeScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(
                       right: 12,
                     ),
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(
-                                12,
-                              ),
-                          child: Image.asset(
-                            item['img']!,
-                            height: 110,
-                            width: 110,
-                            fit: BoxFit.cover,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PlayerScreen(
+                                  songs: ngheGanDay,
+                                  currentIndex: index,
+                                ),
                           ),
-                        ),
-                        const SizedBox(height: 6),
-                        SizedBox(
-                          width: 100,
-                          child: Text(
-                            item['title']!,
-                            textAlign:
-                                TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight:
-                                  FontWeight.w500,
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(
+                                  12,
+                                ),
+                            child: Image.asset(
+                              item['img']!,
+                              height: 110,
+                              width: 110,
+                              fit: BoxFit.cover,
                             ),
-                            overflow:
-                                TextOverflow.ellipsis,
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 6),
+                          SizedBox(
+                            width: 100,
+                            child: Text(
+                              item['title']!,
+                              textAlign:
+                                  TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                fontWeight:
+                                    FontWeight.w500,
+                              ),
+                              overflow: TextOverflow
+                                  .ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -469,30 +496,44 @@ class HomeScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(
                       right: 12,
                     ),
-                    child: Column(
-                      children: [
-                        ClipRRect(
-                          borderRadius:
-                              BorderRadius.circular(
-                                10,
-                              ),
-                          child: Image.asset(
-                            hot[index]['img']!,
-                            height: 130,
-                            width: 130,
-                            fit: BoxFit.cover,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PlayerScreen(
+                                  songs: ngheGanDay,
+                                  currentIndex: index,
+                                ),
                           ),
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          hot[index]['title']!,
-                          style: const TextStyle(
-                            fontWeight:
-                                FontWeight.w500,
-                            fontSize: 14,
+                        );
+                      },
+                      child: Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius:
+                                BorderRadius.circular(
+                                  10,
+                                ),
+                            child: Image.asset(
+                              hot[index]['img']!,
+                              height: 130,
+                              width: 130,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 5),
+                          Text(
+                            hot[index]['title']!,
+                            style: const TextStyle(
+                              fontWeight:
+                                  FontWeight.w500,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -521,6 +562,7 @@ class HomeScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(
                       right: 12,
                     ),
+
                     child: Column(
                       children: [
                         ClipRRect(

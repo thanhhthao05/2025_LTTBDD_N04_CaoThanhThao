@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../auth/login_screen.dart';
 import '../auth/register_screen.dart';
 import '../auth/auth_state.dart';
+import '../home/notifications/whats_new_screen.dart';
+import '../settings/settings_screen.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -58,6 +60,8 @@ class _AccountScreenState
         'title': 'HIEUTHUHAI',
         'img': 'imgs/HIEUTHUHAI.jpg',
       },
+      {'title': 'Perfect', 'img': 'imgs/Perfect.jpg'},
+      {'title': '3107 3', 'img': 'imgs/3107_3.jpg'},
     ];
 
     return Scaffold(
@@ -72,19 +76,45 @@ class _AccountScreenState
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: const [
-          Icon(
-            Icons.notifications_none,
-            color: Colors.black,
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.notifications_none,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              // 👉 Chuyển sang màn hình What's New
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      const WhatsNewScreen(),
+                ),
+              );
+            },
           ),
-          SizedBox(width: 15),
-          Icon(
-            Icons.settings_outlined,
-            color: Colors.black,
+          const SizedBox(width: 10),
+          IconButton(
+            icon: const Icon(
+              Icons.settings_outlined,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              // 👉 Chuyển sang màn hình Settings
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SettingsScreen(
+                    userName: AuthState.username,
+                  ),
+                ),
+              );
+            },
           ),
-          SizedBox(width: 15),
+          const SizedBox(width: 15),
         ],
       ),
+
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 24,
@@ -100,6 +130,12 @@ class _AccountScreenState
                 const CircleAvatar(
                   radius: 35,
                   backgroundColor: Color(0xFFD9C6FF),
+                  child: Icon(
+                    Icons
+                        .person, // 👤 Biểu tượng mặc định
+                    color: Colors.white,
+                    size: 40,
+                  ),
                 ),
                 const SizedBox(width: 15),
                 Text(
@@ -181,43 +217,6 @@ class _AccountScreenState
             ),
 
             const SizedBox(height: 10),
-
-            // Nút đăng xuất
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 20,
-                ),
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    AuthState.isLoggedIn.value = false;
-                    AuthState.username = '';
-                  },
-                  icon: const Icon(Icons.logout),
-                  label: const Text("Đăng xuất"),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        const Color.fromARGB(
-                          255,
-                          248,
-                          157,
-                          210,
-                        ),
-                    foregroundColor: Colors.white,
-                    padding:
-                        const EdgeInsets.symmetric(
-                          horizontal: 40,
-                          vertical: 14,
-                        ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius:
-                          BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),

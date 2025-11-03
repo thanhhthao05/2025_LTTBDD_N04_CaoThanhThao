@@ -8,4 +8,12 @@ class SongModel {
     required this.artist,
     required this.image,
   });
+
+  Map<String, String> toMap() {
+    return {
+      'title': title,
+      'artist': artist,
+      'img': image,
+    };
+  }
 }
