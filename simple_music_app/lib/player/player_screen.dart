@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'dart:async';
 import 'dart:ui';
+import 'share_song.dart';
 
 class PlayerScreen extends StatefulWidget {
   final List<Map<String, String>> songs;
@@ -216,11 +217,203 @@ class _PlayerScreenState extends State<PlayerScreen>
                               size: 28,
                             ),
                             onPressed: () {
-                              Share.share(
-                                '🎵 Nghe ngay bài hát: ${song['title']} - ${song['artist']}',
+                              showModalBottomSheet(
+                                context: context,
+                                backgroundColor:
+                                    Colors.black87,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.vertical(
+                                        top:
+                                            Radius.circular(
+                                              20,
+                                            ),
+                                      ),
+                                ),
+                                builder: (context) => Padding(
+                                  padding:
+                                      const EdgeInsets.all(
+                                        16,
+                                      ),
+                                  child: Column(
+                                    mainAxisSize:
+                                        MainAxisSize
+                                            .min,
+                                    children: [
+                                      const Text(
+                                        'Chia sẻ qua',
+                                        style: TextStyle(
+                                          color: Colors
+                                              .white,
+                                          fontSize: 18,
+                                          fontWeight:
+                                              FontWeight
+                                                  .bold,
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 12,
+                                      ),
+                                      ListTile(
+                                        leading: const FaIcon(
+                                          FontAwesomeIcons
+                                              .facebook,
+                                          color: Colors
+                                              .white,
+                                        ),
+                                        title: const Text(
+                                          'Facebook',
+                                          style: TextStyle(
+                                            color: Colors
+                                                .white70,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          shareSong(
+                                            title:
+                                                song['title'] ??
+                                                'Bài hát',
+                                            artist:
+                                                song['artist'] ??
+                                                'Không rõ',
+                                            platform:
+                                                'facebook',
+                                          );
+                                          Navigator.pop(
+                                            context,
+                                          );
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const FaIcon(
+                                          FontAwesomeIcons
+                                              .facebookMessenger,
+                                          color: Colors
+                                              .blueAccent,
+                                        ),
+                                        title: const Text(
+                                          'Messenger',
+                                          style: TextStyle(
+                                            color: Colors
+                                                .white70,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          shareSong(
+                                            title:
+                                                song['title'] ??
+                                                'Bài hát',
+                                            artist:
+                                                song['artist'] ??
+                                                'Không rõ',
+                                            platform:
+                                                'messenger',
+                                          );
+                                          Navigator.pop(
+                                            context,
+                                          );
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const FaIcon(
+                                          FontAwesomeIcons
+                                              .instagram,
+                                          color: Colors
+                                              .pinkAccent,
+                                        ),
+                                        title: const Text(
+                                          'Instagram',
+                                          style: TextStyle(
+                                            color: Colors
+                                                .white70,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          shareSong(
+                                            title:
+                                                song['title'] ??
+                                                'Bài hát',
+                                            artist:
+                                                song['artist'] ??
+                                                'Không rõ',
+                                            platform:
+                                                'instagram',
+                                          );
+                                          Navigator.pop(
+                                            context,
+                                          );
+                                        },
+                                      ),
+                                      ListTile(
+                                        leading: const FaIcon(
+                                          FontAwesomeIcons
+                                              .commentDots,
+                                          color: Colors
+                                              .greenAccent,
+                                        ),
+                                        title: const Text(
+                                          'Zalo',
+                                          style: TextStyle(
+                                            color: Colors
+                                                .white70,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          shareSong(
+                                            title:
+                                                song['title'] ??
+                                                'Bài hát',
+                                            artist:
+                                                song['artist'] ??
+                                                'Không rõ',
+                                            platform:
+                                                'zalo',
+                                          );
+                                          Navigator.pop(
+                                            context,
+                                          );
+                                        },
+                                      ),
+
+                                      const Divider(
+                                        color: Colors
+                                            .white24,
+                                      ),
+                                      ListTile(
+                                        leading: const Icon(
+                                          Icons
+                                              .more_horiz,
+                                          color: Colors
+                                              .white,
+                                        ),
+                                        title: const Text(
+                                          'Khác...',
+                                          style: TextStyle(
+                                            color: Colors
+                                                .white70,
+                                          ),
+                                        ),
+                                        onTap: () {
+                                          shareSong(
+                                            title:
+                                                song['title'] ??
+                                                'Bài hát',
+                                            artist:
+                                                song['artist'] ??
+                                                'Không rõ',
+                                          );
+                                          Navigator.pop(
+                                            context,
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               );
                             },
                           ),
+
                           IconButton(
                             icon: Icon(
                               isFavorite
