@@ -1,30 +1,147 @@
 import 'package:flutter/material.dart';
 import '../search/search_screen.dart';
+import 'artist_detail_screen.dart';
 
-class LibraryScreen extends StatelessWidget {
+class LibraryScreen extends StatefulWidget {
   const LibraryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Danh sách các nghệ sĩ và playlist
-    final List<Map<String, String>> libraryItems = [
-      {
-        'name': 'Vũ.',
-        'type': 'Nghệ sĩ',
-        'img': 'imgs/Vũ.jpg',
-      },
-      {
-        'name': 'HIEUTHUHAI',
-        'type': 'Nghệ sĩ',
-        'img': 'imgs/HIEUTHUHAI.jpg',
-      },
-      {
-        'name': 'Nhạc Chill',
-        'type': 'Playlist',
-        'img': 'imgs/Nhạc_Chill_Yêu_Đời.jpg',
-      },
-    ];
+  State<LibraryScreen> createState() =>
+      _LibraryScreenState();
+}
 
+class _LibraryScreenState
+    extends State<LibraryScreen> {
+  // Danh sách nghệ sĩ có sẵn
+  final List<Map<String, dynamic>> libraryItems = [
+    {
+      'name': 'Vũ',
+      'type': 'Nghệ sĩ',
+      'img': 'imgs/Vũ.jpg',
+      'songs': [
+        {
+          'title': 'Lạ Lùng',
+          'artist': 'Vũ',
+          'img': 'imgs/La_Lung.jpg',
+        },
+        {
+          'title': 'Bước Qua Nhau',
+          'artist': 'Vũ',
+          'img': 'imgs/Buoc_Qua_Nhau.jpg',
+        },
+        {
+          'title': 'Mùa Mưa Ngâu Nằm Cạnh',
+          'artist': 'Vũ',
+          'img': 'imgs/Mua_Mua_Ngau_Nam_Canh.jpg',
+        },
+      ],
+    },
+    {
+      'name': 'HIEUTHUHAI',
+      'type': 'Nghệ sĩ',
+      'img': 'imgs/HIEUTHUHAI.jpg',
+      'songs': [
+        {
+          'title': 'Không Thể Say',
+          'artist': 'HIEUTHUHAI',
+          'img': 'imgs/Khong_The_Say.jpg',
+        },
+        {
+          'title': 'Vệ Tinh',
+          'artist': 'HIEUTHUHAI',
+          'img': 'imgs/Ve_Tinh.jpg',
+        },
+        {
+          'title': 'Ngáo Ngơ',
+          'artist': 'HIEUTHUHAI',
+          'img': 'imgs/Ngao_Ngo.jpg',
+        },
+      ],
+    },
+    {
+      'name': 'MIN',
+      'type': 'Nghệ sĩ',
+      'img': 'imgs/MIN.jpg',
+      'songs': [
+        {
+          'title': 'Ghen',
+          'artist': 'MIN',
+          'img': 'imgs/Ghen.jpg',
+        },
+        {
+          'title': 'Có Em Chờ',
+          'artist': 'MIN',
+          'img': 'imgs/Co_Em_Cho.jpg',
+        },
+        {
+          'title': 'Vì Yêu Cứ Đâm Đầu',
+          'artist': 'MIN',
+          'img': 'imgs/Vi_Yeu_Cu_Dam_Dau.jpg',
+        },
+      ],
+    },
+  ];
+
+  // 🎵 Hàm thêm nghệ sĩ mới
+  void _addNewArtist() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final nameController = TextEditingController();
+        final imgController = TextEditingController();
+
+        return AlertDialog(
+          title: const Text("Thêm nghệ sĩ mới"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: nameController,
+                decoration: const InputDecoration(
+                  labelText: "Tên nghệ sĩ",
+                ),
+              ),
+              TextField(
+                controller: imgController,
+                decoration: const InputDecoration(
+                  labelText:
+                      "Đường dẫn ảnh (ví dụ: imgs/NewArtist.jpg)",
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Hủy"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                if (nameController.text.isNotEmpty) {
+                  setState(() {
+                    libraryItems.add({
+                      'name': nameController.text,
+                      'type': 'Nghệ sĩ',
+                      'img':
+                          imgController.text.isNotEmpty
+                          ? imgController.text
+                          : 'imgs/default_artist.jpg',
+                      'songs': [],
+                    });
+                  });
+                  Navigator.pop(context);
+                }
+              },
+              child: const Text("Thêm"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -32,17 +149,28 @@ class LibraryScreen extends StatelessWidget {
         elevation: 0,
         title: const Text(
           "Thư viện của bạn",
-          // Tiêu đề AppBar
           style: TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
         ),
-        actions: const [
-          Icon(Icons.search, color: Colors.black),
-          SizedBox(width: 15),
-          Icon(Icons.add, color: Colors.black),
-          SizedBox(width: 15),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.search,
+              color: Colors.black,
+            ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      const SearchScreen(),
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 10),
         ],
       ),
       body: Padding(
@@ -52,7 +180,7 @@ class LibraryScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Nút "Nghệ sĩ
+            // 🔹 Nút "Nghệ sĩ"
             Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 12,
@@ -73,116 +201,107 @@ class LibraryScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // thanh ngang mảnh
-            const Divider(
-              color: Colors.black26,
-              thickness: 1,
-              height: 20,
-            ),
-
-            // Tiêu đề "Tìm kiếm gần đây"
+            // 🔹 Tiêu đề "Tìm kiếm gần đây"
             const Row(
               mainAxisAlignment:
-                  MainAxisAlignment.spaceBetween,
+                  MainAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.swap_vert,
-                      color: Colors.black54,
-                      size: 20,
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      "Tìm Kiếm gần đây",
-                      style: TextStyle(
-                        color: Colors.black54,
-                      ),
-                    ),
-                  ],
-                ),
                 Icon(
-                  Icons.grid_view_rounded,
+                  Icons.swap_vert,
                   color: Colors.black54,
                   size: 20,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  "Tìm kiếm gần đây",
+                  style: TextStyle(
+                    color: Colors.black54,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
 
-            // Danh sách nghệ sĩ / playlist
+            // 🔹 Danh sách nghệ sĩ
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    for (
-                      int i = 0;
-                      i < libraryItems.length;
-                      i++
-                    ) ...[
-                      ListTile(
-                        leading: CircleAvatar(
-                          radius: 28,
-                          backgroundImage: AssetImage(
-                            libraryItems[i]['img']!,
-                          ),
-                        ),
-                        title: Text(
-                          libraryItems[i]['name']!,
-                          style: const TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                        subtitle: Text(
-                          libraryItems[i]['type']!,
-                          style: const TextStyle(
-                            color: Colors.black54,
-                          ),
-                        ),
-                        onTap: () {},
-                      ),
-                    ],
-
-                    // Thêm 2 nút Add
-                    const ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor:
-                            Colors.black12,
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.black,
-                        ),
-                      ),
-                      title: Text(
-                        "Thêm nghệ sĩ",
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                    const ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor:
-                            Colors.black12,
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.black,
-                        ),
-                      ),
-                      title: Text(
-                        "Thêm podcast và chương trình",
-                        style: TextStyle(
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+              child: ListView.builder(
+                itemCount:
+                    libraryItems.length +
+                    1, // chỉ thêm "Thêm nghệ sĩ"
+                itemBuilder: (context, index) {
+                  if (index < libraryItems.length) {
+                    final item = libraryItems[index];
+                    return _buildLibraryItem(
+                      context,
+                      item,
+                    );
+                  } else {
+                    return _buildAddItem(
+                      "Thêm nghệ sĩ",
+                      _addNewArtist,
+                    );
+                  }
+                },
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  // 🧩 Hàm tạo item nghệ sĩ
+  Widget _buildLibraryItem(
+    BuildContext context,
+    Map<String, dynamic> item,
+  ) {
+    return ListTile(
+      leading: CircleAvatar(
+        radius: 28,
+        backgroundImage: AssetImage(item['img']!),
+      ),
+      title: Text(
+        item['name']!,
+        style: const TextStyle(color: Colors.black),
+      ),
+      subtitle: Text(
+        item['type']!,
+        style: const TextStyle(color: Colors.black54),
+      ),
+      onTap: () {
+        if (item['type'] == 'Nghệ sĩ' &&
+            item['songs'] != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ArtistDetailScreen(
+                artistName: item['name']!,
+                songs: List<Map<String, String>>.from(
+                  item['songs'],
+                ),
+              ),
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  // 🧩 Hàm tạo nút “Thêm nghệ sĩ”
+  Widget _buildAddItem(
+    String title,
+    VoidCallback onTap,
+  ) {
+    return ListTile(
+      leading: const CircleAvatar(
+        backgroundColor: Colors.black12,
+        child: Icon(Icons.add, color: Colors.black),
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(color: Colors.black),
+      ),
+      onTap: onTap,
     );
   }
 }
