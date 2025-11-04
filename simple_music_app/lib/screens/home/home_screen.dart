@@ -3,99 +3,30 @@ import './notifications/whats_new_screen.dart';
 import '../../player/recently_played_screen.dart';
 import '../../player/song_model.dart';
 import '../../player/player_screen.dart';
+import '../song_options_menu.dart';
+import '../../player/all_songs.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() =>
+      _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final List<Map<String, String>> goiYBaiHat =
+      List.from(allSongs);
+
+  final List<Map<String, String>> ngheGanDayList =
+      ngheGanDay;
+
+  final List<Map<String, String>> hotList = hot;
+
+  final List<Map<String, String>> chartsList = charts;
+
+  @override
   Widget build(BuildContext context) {
-    // 🎵 Gợi ý bài hát
-    final goiYBaiHat = [
-      {
-        'title': 'Hẹn Gặp Em Dưới Ánh Trăng',
-        'artist': 'Hurrykng, HieuThuHai, Manbo',
-        'img': 'imgs/Hẹn_Gặp_Em_Dưới_Ánh_Trăng.jpg',
-      },
-      {
-        'title': 'Kho Báu',
-        'artist': '(S)Trong',
-        'img': 'imgs/Kho_Báu.jpg',
-      },
-      {
-        'title': 'Ếch Ngoài Đáy Giếng',
-        'artist': 'EM XINH "SAY HI", Phương Mỹ Chi',
-        'img': 'imgs/Ếch_Ngoài_Đáy_Giếng.jpg',
-      },
-      {
-        'title': '3107 3',
-        'artist': 'W/N, Duongg, Nâu, titie',
-        'img': 'imgs/3107_3.jpg',
-      },
-      {
-        'title': 'Chăm Hoa',
-        'artist': 'MONO',
-        'img': 'imgs/Chăm_Hoa.jpg',
-      },
-      {
-        'title': 'Perfect',
-        'artist': 'Shiki',
-        'img': 'imgs/Perfect.jpg',
-      },
-      {
-        'title': 'Đa Nghi',
-        'artist': 'Anh Trai Say Hi 2',
-        'img': 'imgs/Đa_Nghi.jpg',
-      },
-    ];
-
-    // 🎧 Nghe gần đây
-    final ngheGanDay = [
-      {
-        'title': 'Không Thể Say',
-        'img': 'imgs/HIEUTHUHAI.jpg',
-      },
-      {
-        'title': 'Chăm Hoa',
-        'img': 'imgs/Chăm_hoa.jpg',
-      },
-      {'title': 'Perfect', 'img': 'imgs/Perfect.jpg'},
-      {'title': '3107 3', 'img': 'imgs/3107_3.jpg'},
-      {'title': 'K-Pop', 'img': 'imgs/K_POP.jpg'},
-    ];
-
-    final hot = [
-      {'title': 'APT', 'img': 'imgs/Charts_Asia.jpg'},
-      {'title': '3107 3', 'img': 'imgs/3107_3.jpg'},
-      {'title': 'Cupid', 'img': 'imgs/cupid.jpg'},
-      {
-        'title': 'Ain’t My Fault',
-        'img': 'imgs/aint_my_fault.jpg',
-      },
-    ];
-
-    final charts = [
-      {
-        'title': 'Nhạc Lofi Chill',
-        'img': 'imgs/Nhạc_Lofi_Chill.jpg',
-      },
-      {
-        'title': 'Mashup Nhạc Việt',
-        'img': 'imgs/Mashup_Nhạc_Việt.jpg',
-      },
-      {
-        'title': 'Nhạc Buồn',
-        'img': 'imgs/Nhạc_Buồn.jpg',
-      },
-      {
-        'title': 'Playlist này Chill Phết',
-        'img': 'imgs/Playlist_này_Chill_Phết.jpg',
-      },
-      {
-        'title': 'V-Pop Gây Bão',
-        'img': 'imgs/V_Pop_Gây_Bão.jpg',
-      },
-    ];
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -165,7 +96,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            // 🎶 Gợi ý bài hát
+            // 🎶 Gợi ý bài hát (giữ nguyên header của bạn)
             Row(
               mainAxisAlignment:
                   MainAxisAlignment.spaceBetween,
@@ -181,19 +112,22 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     TextButton.icon(
                       onPressed: () {
-                        ScaffoldMessenger.of(
+                        Navigator.push(
                           context,
-                        ).showSnackBar(
-                          const SnackBar(
-                            content: Text(
-                              "🎵 Đang phát tất cả bài hát!",
-                            ),
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                PlayerScreen(
+                                  songs: allSongs,
+                                  currentIndex:
+                                      0, // Bắt đầu từ bài đầu tiên
+                                ),
                           ),
                         );
                       },
+
                       icon: const Icon(
                         Icons.play_circle_fill,
-                        color: const Color.fromARGB(
+                        color: Color.fromARGB(
                           255,
                           253,
                           119,
@@ -203,7 +137,7 @@ class HomeScreen extends StatelessWidget {
                       label: const Text(
                         "Phát tất cả",
                         style: TextStyle(
-                          color: const Color.fromARGB(
+                          color: Color.fromARGB(
                             255,
                             253,
                             119,
@@ -214,19 +148,26 @@ class HomeScreen extends StatelessWidget {
                     ),
                     IconButton(
                       onPressed: () {
+                        setState(() {
+                          goiYBaiHat
+                            ..clear()
+                            ..addAll(allSongs)
+                            ..shuffle();
+                        });
                         ScaffoldMessenger.of(
                           context,
                         ).showSnackBar(
                           const SnackBar(
                             content: Text(
-                              "🔄 Danh sách đã làm mới!",
+                              "✨ Danh sách gợi ý đã làm mới!",
                             ),
                           ),
                         );
                       },
+
                       icon: const Icon(
                         Icons.refresh,
-                        color: const Color.fromARGB(
+                        color: Color.fromARGB(
                           255,
                           253,
                           119,
@@ -240,150 +181,173 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
 
-            // 🎵 Gợi ý bài hát
+            // 🎵 Gợi ý bài hát - layout ngang nhiều cột như bạn có
             SizedBox(
-              height:
-                  280, // Chiều cao cố định để chứa các cột
+              height: 280,
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   crossAxisAlignment:
                       CrossAxisAlignment.start,
-                  children: List.generate(
-                    (goiYBaiHat.length / 3)
-                        .ceil(), // số cột
-                    (colIndex) {
-                      return Column(
-                        mainAxisAlignment:
-                            MainAxisAlignment.start,
-                        children: List.generate(3, (
-                          rowIndex,
-                        ) {
-                          int index =
-                              colIndex * 3 + rowIndex;
-                          if (index >=
-                              goiYBaiHat.length)
-                            return const SizedBox();
+                  children: List.generate((goiYBaiHat.length / 3).ceil(), (
+                    colIndex,
+                  ) {
+                    return Column(
+                      mainAxisAlignment:
+                          MainAxisAlignment.start,
+                      children: List.generate(3, (
+                        rowIndex,
+                      ) {
+                        int index =
+                            colIndex * 3 + rowIndex;
+                        if (index >= goiYBaiHat.length)
+                          return const SizedBox();
+                        final song = goiYBaiHat[index];
 
-                          final song =
-                              goiYBaiHat[index];
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      PlayerScreen(
-                                        songs:
-                                            goiYBaiHat,
-                                        currentIndex:
-                                            index,
-                                      ),
+                        // --- đây là phần item: giữ layout của bạn, nhưng đặt SongOptionsMenu đúng chỗ ---
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    PlayerScreen(
+                                      songs:
+                                          goiYBaiHat,
+                                      currentIndex:
+                                          index,
+                                    ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            width: 180,
+                            height: 80,
+                            margin:
+                                const EdgeInsets.symmetric(
+                                  vertical: 6,
                                 ),
-                              );
-                            },
-                            child: Container(
-                              width: 180,
-                              height: 80,
-                              margin:
-                                  const EdgeInsets.symmetric(
-                                    vertical: 6,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[100],
+                              borderRadius:
+                                  BorderRadius.circular(
+                                    12,
                                   ),
-                              decoration: BoxDecoration(
-                                color:
-                                    Colors.grey[100],
-                                borderRadius:
-                                    BorderRadius.circular(
-                                      12,
-                                    ),
-                              ),
-                              child: Row(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment
-                                        .center,
-                                children: [
-                                  const SizedBox(
-                                    width: 6,
-                                  ),
-                                  ClipRRect(
-                                    borderRadius:
-                                        BorderRadius.circular(
-                                          8,
-                                        ),
-                                    child: Image.asset(
-                                      song['img']!,
-                                      height: 60,
-                                      width: 60,
-                                      fit:
-                                          BoxFit.cover,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Expanded(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment
-                                              .center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment
-                                              .start,
-                                      children: [
-                                        Text(
-                                          song['title']!,
-                                          style: const TextStyle(
-                                            fontSize:
-                                                14,
-                                            fontWeight:
-                                                FontWeight
-                                                    .w600,
-                                          ),
-                                          overflow:
-                                              TextOverflow
-                                                  .ellipsis,
-                                        ),
-                                        const SizedBox(
-                                          height: 3,
-                                        ),
-                                        Text(
-                                          song['artist']!,
-                                          style: const TextStyle(
-                                            fontSize:
-                                                12,
-                                            color: Colors
-                                                .grey,
-                                          ),
-                                          overflow:
-                                              TextOverflow
-                                                  .ellipsis,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const Icon(
-                                    Icons.more_vert,
-                                    color:
-                                        Colors.black54,
-                                    size: 18,
-                                  ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                ],
-                              ),
                             ),
-                          );
-                        }),
-                      );
-                    },
-                  ),
+                            child: Row(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .center,
+                              children: [
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                ClipRRect(
+                                  borderRadius:
+                                      BorderRadius.circular(
+                                        8,
+                                      ),
+                                  child: Image.asset(
+                                    song['img']!,
+                                    height: 60,
+                                    width: 60,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment
+                                            .center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment
+                                            .start,
+                                    children: [
+                                      Text(
+                                        song['title']!,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight:
+                                              FontWeight
+                                                  .w600,
+                                        ),
+                                        overflow:
+                                            TextOverflow
+                                                .ellipsis,
+                                      ),
+                                      const SizedBox(
+                                        height: 3,
+                                      ),
+                                      Text(
+                                        song['artist'] ??
+                                            '',
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors
+                                              .grey,
+                                        ),
+                                        overflow:
+                                            TextOverflow
+                                                .ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                // <-- đặt SongOptionsMenu ở đây, dùng 'song' và index hiện tại
+                                SongOptionsMenu(
+                                  song: song,
+                                  onPlay: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            PlayerScreen(
+                                              songs:
+                                                  goiYBaiHat,
+                                              currentIndex:
+                                                  index,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  onAddToPlaylist: () {
+                                    ScaffoldMessenger.of(
+                                      context,
+                                    ).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          "Đã thêm '${song['title']}' vào danh sách phát.",
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  onDelete: () {
+                                    setState(() {
+                                      goiYBaiHat
+                                          .removeAt(
+                                            index,
+                                          );
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      }),
+                    );
+                  }),
                 ),
               ),
             ),
 
             const SizedBox(height: 30),
-            // 🕓 Nghe gần đây
+
+            // 🕓 Nghe gần đây (giữ nguyên phần còn lại của màn hình)
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -542,7 +506,7 @@ class HomeScreen extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            // 📊 Chill
+            // 📊 Chill (charts)
             const Text(
               "Chill",
               style: TextStyle(
@@ -562,7 +526,6 @@ class HomeScreen extends StatelessWidget {
                     padding: const EdgeInsets.only(
                       right: 12,
                     ),
-
                     child: Column(
                       children: [
                         ClipRRect(

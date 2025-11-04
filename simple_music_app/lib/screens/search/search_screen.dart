@@ -1,155 +1,279 @@
 import 'package:flutter/material.dart';
+import '../main_screen.dart';
+import '../../screens/song_options_menu.dart';
+import '../../player/player_screen.dart';
+import '../../player/all_songs.dart';
+import 'search_result_screen.dart'; // 👉 thêm dòng này
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
   @override
+  State<SearchScreen> createState() =>
+      _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  final List<String> suggestions = [
+    'nghe gần đây"',
+    'hot',
+    'gợi ý bài hát',
+  ];
+  String searchQuery = '';
+
+  @override
   Widget build(BuildContext context) {
-    // Danh sách các danh mục
-    final List<Map<String, String>> categories = [
-      {'title': 'Podcast', 'img': 'imgs/Podcast.jpg'},
-      {
-        'title': 'Top Songs Global',
-        'img': 'imgs/Top_Songs_Global.jpg',
-      },
-      {
-        'title': 'Nhạc Chill Yêu Đời',
-        'img': 'imgs/Nhạc_Chill_Yêu_Đời.jpg',
-      },
-      {
-        'title': 'Top Thinh Hành',
-        'img': 'imgs/Top_Thịnh_Hành.jpg',
-      },
-      {
-        'title': 'Nhạc Trung',
-        'img': 'imgs/Nhạc_Trung.jpg',
-      },
-      {'title': 'K-Pop', 'img': 'imgs/K_Pop.jpg'},
-      {
-        'title': 'Quang Hùng MasterD',
-        'img': 'imgs/Quang_Hùng _MasterD.jpg',
-      },
-      {
-        'title': 'Tâm trạng',
-        'img': 'imgs/Tâm_trạng.jpg',
-      },
-    ];
+    final filteredSongs = allSongs
+        .where(
+          (song) =>
+              song['title']!.toLowerCase().contains(
+                searchQuery.toLowerCase(),
+              ) ||
+              song['artist']!.toLowerCase().contains(
+                searchQuery.toLowerCase(),
+              ),
+        )
+        .toList();
 
     return Scaffold(
-      backgroundColor: Colors.white, // ✅ Nền trắng
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          "Tìm kiếm",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 15),
-            child: Icon(
-              Icons.camera_alt_outlined,
-              color: Colors.black,
-            ),
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 48, // Lề hai bên
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        automaticallyImplyLeading: false,
+        title: Row(
           children: [
-            // 🔍 Ô tìm kiếm
-            TextField(
-              decoration: InputDecoration(
-                hintText: "Bạn muốn nghe gì?",
-                prefixIcon: const Icon(Icons.search),
-                filled: true,
-                fillColor: Colors.grey[200],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(
-                    15,
+            IconButton(
+              icon: const Icon(
+                Icons.arrow_back,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const MainScreen(
+                      initialIndex: 1,
+                    ),
                   ),
-                  borderSide: BorderSide.none,
-                ),
-              ),
+                  (route) => false,
+                );
+              },
             ),
-            const SizedBox(height: 15),
-
-            const Text(
-              "Đề xuất cho bạn",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // 🧱 Lưới danh mục
             Expanded(
-              child: GridView.builder(
-                itemCount: categories.length,
-                gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // 2 cột
-                      crossAxisSpacing:
-                          36, // Khoảng cách ngang giữa các mục
-                      mainAxisSpacing:
-                          36, // Khoảng cách dọc giữa các mục
-                      childAspectRatio: 1.2,
-                    ),
-                itemBuilder: (context, index) {
-                  final category = categories[index];
-                  return Container(
-                    decoration: BoxDecoration(
-                      borderRadius:
-                          BorderRadius.circular(15),
-                      image: DecorationImage(
-                        image: AssetImage(
-                          category['img']!,
-                        ),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    child: Container(
-                      alignment: Alignment.bottomLeft,
-                      padding: const EdgeInsets.all(
-                        10,
-                      ),
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            BorderRadius.circular(15),
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.black.withOpacity(
-                              0.5,
-                            ),
-                            Colors.transparent,
-                          ],
-                          begin:
-                              Alignment.bottomCenter,
-                          end: Alignment.topCenter,
-                        ),
-                      ),
-                      child: Text(
-                        category['title']!,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  );
+              child: TextField(
+                decoration: const InputDecoration(
+                  hintText:
+                      'Tìm kiếm bài hát, nghệ sĩ...',
+                  hintStyle: TextStyle(
+                    color: Colors.grey,
+                  ),
+                  border: InputBorder.none,
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    searchQuery = value;
+                  });
                 },
               ),
             ),
           ],
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment:
+                CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 8),
+              const Text(
+                'Đề xuất cho bạn',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // 💡 Khi bấm vào chip, mở trang SearchResultScreen
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: suggestions.map((s) {
+                  return ActionChip(
+                    label: Text(s),
+                    backgroundColor: Colors.grey[200],
+                    onPressed: () {
+                      // xác định danh sách bài hát tương ứng
+                      late List<Map<String, String>>
+                      selectedSongs;
+                      if (s == 'nghe gần đây"') {
+                        selectedSongs =
+                            ngheGanDay; // danh sách bạn có thể khai báo trong all_songs.dart
+                      } else if (s == 'hot') {
+                        selectedSongs =
+                            hot; // danh sách bài hát hot
+                      } else {
+                        selectedSongs =
+                            allSongs; // gợi ý bài hát -> allSongs
+                      }
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) =>
+                              SearchResultScreen(
+                                title: s,
+                                songs: selectedSongs,
+                              ),
+                        ),
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
+
+              const SizedBox(height: 16),
+
+              // 🎵 Nếu chưa nhập thì hiển thị "Tìm kiếm gần đây"
+              if (searchQuery.isEmpty) ...[
+                Row(
+                  mainAxisAlignment:
+                      MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Tìm kiếm gần đây',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          allSongs.clear();
+                        });
+                      },
+                      child: const Text(
+                        'XÓA',
+                        style: TextStyle(
+                          color: Colors.purple,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+              ],
+
+              // 🎧 Danh sách bài hát sau khi lọc
+              if (filteredSongs.isEmpty)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(30),
+                    child: Text(
+                      "Không tìm thấy kết quả phù hợp 😢",
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                )
+              else
+                Column(
+                  children: filteredSongs.asMap().entries.map((
+                    entry,
+                  ) {
+                    final index = entry.key;
+                    final item = entry.value;
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: ClipRRect(
+                        borderRadius:
+                            BorderRadius.circular(8),
+                        child: Image.asset(
+                          item['img']!,
+                          width: 50,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      title: Text(
+                        item['title']!,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      subtitle: Text(
+                        item['artist']!,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                        ),
+                      ),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                PlayerScreen(
+                                  songs: filteredSongs,
+                                  currentIndex: index,
+                                ),
+                          ),
+                        );
+                      },
+                      trailing: SongOptionsMenu(
+                        song: item,
+                        onPlay: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  PlayerScreen(
+                                    songs:
+                                        filteredSongs,
+                                    currentIndex:
+                                        index,
+                                  ),
+                            ),
+                          );
+                        },
+                        onAddToPlaylist: () {
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "🎶 Đã thêm '${item['title']}' vào danh sách phát.",
+                              ),
+                            ),
+                          );
+                        },
+                        onDelete: () {
+                          setState(() {
+                            allSongs.remove(item);
+                          });
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                "🗑 Đã xóa khỏi danh sách tìm kiếm",
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  }).toList(),
+                ),
+            ],
+          ),
         ),
       ),
     );

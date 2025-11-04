@@ -1,0 +1,138 @@
+import 'package:flutter/material.dart';
+
+class SongOptionsMenu extends StatelessWidget {
+  final Map<String, String> song;
+  final VoidCallback onPlay;
+  final VoidCallback onAddToPlaylist;
+  final VoidCallback onDelete;
+
+  const SongOptionsMenu({
+    super.key,
+    required this.song,
+    required this.onPlay,
+    required this.onAddToPlaylist,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      icon: const Icon(
+        Icons.more_vert,
+        color: Colors.black87,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+      color: Colors.white,
+      elevation: 6,
+      onSelected: (value) {
+        switch (value) {
+          case 'play':
+            onPlay();
+            break;
+          case 'add':
+            onAddToPlaylist();
+            break;
+          case 'delete':
+            onDelete();
+            break;
+        }
+      },
+      itemBuilder: (context) => [
+        // 🔹 Tiêu đề bài hát hiển thị trên đầu menu
+        PopupMenuItem(
+          enabled: false,
+          padding: const EdgeInsets.symmetric(
+            vertical: 6,
+            horizontal: 12,
+          ),
+          child: Row(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Image.asset(
+                  song['img'] ?? '',
+                  width: 40,
+                  height: 40,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment:
+                      CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      song['title'] ??
+                          'Không có tên bài hát',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    Text(
+                      song['artist'] ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const PopupMenuDivider(),
+
+        // ▶️ Phát bài hát
+        PopupMenuItem(
+          value: 'play',
+          child: ListTile(
+            dense: true,
+            leading: const Icon(
+              Icons.play_arrow_rounded,
+              color: Colors.purple,
+            ),
+            title: const Text('Phát bài hát'),
+          ),
+        ),
+
+        // ➕ Thêm vào danh sách phát
+        PopupMenuItem(
+          value: 'add',
+          child: ListTile(
+            dense: true,
+            leading: const Icon(
+              Icons.playlist_add_rounded,
+              color: Colors.blue,
+            ),
+            title: const Text(
+              'Thêm vào danh sách phát',
+            ),
+          ),
+        ),
+
+        // 🗑 Xóa khỏi danh sách
+        PopupMenuItem(
+          value: 'delete',
+          child: ListTile(
+            dense: true,
+            leading: const Icon(
+              Icons.delete_outline,
+              color: Colors.grey,
+            ),
+            title: const Text('Xóa khỏi danh sách'),
+          ),
+        ),
+      ],
+    );
+  }
+}
