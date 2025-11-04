@@ -3,7 +3,7 @@ import '../main_screen.dart';
 import '../../screens/song_options_menu.dart';
 import '../../player/player_screen.dart';
 import '../../player/all_songs.dart';
-import 'search_result_screen.dart'; // 👉 thêm dòng này
+import 'search_result_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -15,7 +15,7 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final List<String> suggestions = [
-    'nghe gần đây"',
+    'nghe gần đây',
     'hot',
     'gợi ý bài hát',
   ];
@@ -99,7 +99,7 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
               const SizedBox(height: 8),
 
-              // 💡 Khi bấm vào chip, mở trang SearchResultScreen
+              // 🏷️ Chip đề xuất
               Wrap(
                 spacing: 8,
                 runSpacing: 8,
@@ -108,18 +108,15 @@ class _SearchScreenState extends State<SearchScreen> {
                     label: Text(s),
                     backgroundColor: Colors.grey[200],
                     onPressed: () {
-                      // xác định danh sách bài hát tương ứng
-                      late List<Map<String, String>>
-                      selectedSongs;
-                      if (s == 'nghe gần đây"') {
-                        selectedSongs =
-                            ngheGanDay; // danh sách bạn có thể khai báo trong all_songs.dart
+                      List<Map<String, String>>
+                      selectedSongs = [];
+
+                      if (s == 'nghe gần đây') {
+                        selectedSongs = ngheGanDay;
                       } else if (s == 'hot') {
-                        selectedSongs =
-                            hot; // danh sách bài hát hot
+                        selectedSongs = hot;
                       } else {
-                        selectedSongs =
-                            allSongs; // gợi ý bài hát -> allSongs
+                        selectedSongs = allSongs;
                       }
 
                       Navigator.push(
@@ -139,7 +136,7 @@ class _SearchScreenState extends State<SearchScreen> {
 
               const SizedBox(height: 16),
 
-              // 🎵 Nếu chưa nhập thì hiển thị "Tìm kiếm gần đây"
+              // 🕘 Lịch sử tìm kiếm
               if (searchQuery.isEmpty) ...[
                 Row(
                   mainAxisAlignment:
@@ -171,7 +168,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 const SizedBox(height: 12),
               ],
 
-              // 🎧 Danh sách bài hát sau khi lọc
+              // 📝 Kết quả tìm kiếm
               if (filteredSongs.isEmpty)
                 const Center(
                   child: Padding(
