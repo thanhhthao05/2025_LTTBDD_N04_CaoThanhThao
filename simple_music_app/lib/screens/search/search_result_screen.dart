@@ -1,3 +1,4 @@
+//màn hình kết quả tìm kiếm
 import 'package:flutter/material.dart';
 import '../../player/player_screen.dart';
 import '../../screens/song_options_menu.dart';

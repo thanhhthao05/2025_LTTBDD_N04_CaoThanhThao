@@ -17,12 +17,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final List<Map<String, String>> goiYBaiHat =
       List.from(allSongs);
-
   final List<Map<String, String>> ngheGanDayList =
       ngheGanDay;
-
   final List<Map<String, String>> hotList = hot;
-
   final List<Map<String, String>> chartsList = charts;
 
   @override
@@ -64,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 🔘 Thanh chọn Music / Album
+            // 🔘 Thanh chọn Music
             Row(
               children: [
                 FilterChip(
@@ -83,20 +80,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   onSelected: (_) {},
                 ),
                 const SizedBox(width: 8),
-                FilterChip(
-                  label: const Text("Album"),
-                  selected: false,
-                  backgroundColor: Colors.white,
-                  labelStyle: const TextStyle(
-                    color: Colors.black54,
-                  ),
-                  onSelected: (_) {},
-                ),
               ],
             ),
-            const SizedBox(height: 20),
 
-            // 🎶 Gợi ý bài hát (giữ nguyên header của bạn)
+            const SizedBox(height: 16),
+
+            // 🎶 Gợi ý bài hát
             Row(
               mainAxisAlignment:
                   MainAxisAlignment.spaceBetween,
@@ -118,13 +107,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             builder: (context) =>
                                 PlayerScreen(
                                   songs: allSongs,
-                                  currentIndex:
-                                      0, // Bắt đầu từ bài đầu tiên
+                                  currentIndex: 0,
                                 ),
                           ),
                         );
                       },
-
                       icon: const Icon(
                         Icons.play_circle_fill,
                         color: Color.fromARGB(
@@ -164,7 +151,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         );
                       },
-
                       icon: const Icon(
                         Icons.refresh,
                         color: Color.fromARGB(
@@ -181,7 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 10),
 
-            // 🎵 Gợi ý bài hát - layout ngang nhiều cột như bạn có
+            // 🎵 Gợi ý bài hát - layout ngang nhiều cột
             SizedBox(
               height: 280,
               child: SingleChildScrollView(
@@ -204,7 +190,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           return const SizedBox();
                         final song = goiYBaiHat[index];
 
-                        // --- đây là phần item: giữ layout của bạn, nhưng đặt SongOptionsMenu đúng chỗ ---
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
@@ -296,8 +281,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ],
                                   ),
                                 ),
-
-                                // <-- đặt SongOptionsMenu ở đây, dùng 'song' và index hiện tại
                                 SongOptionsMenu(
                                   song: song,
                                   onPlay: () {
@@ -347,7 +330,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 30),
 
-            // 🕓 Nghe gần đây (giữ nguyên phần còn lại của màn hình)
+            // 🕓 Nghe gần đây
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -506,7 +489,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             const SizedBox(height: 25),
 
-            // 📊 Chill (charts)
+            // 📊 Chill
             const Text(
               "Chill",
               style: TextStyle(

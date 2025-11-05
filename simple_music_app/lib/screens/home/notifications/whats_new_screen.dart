@@ -1,48 +1,76 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import '../../../player/player_screen.dart';
+import '../../../player/song_model.dart';
 
 class WhatsNewScreen extends StatelessWidget {
   const WhatsNewScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 🎵 Danh sách bài hát "Mới phát hành"
-    final List<Map<String, String>> newSongs = [
+    // 🎵 Danh sách bài hát có ngày phát hành
+    final List<Map<String, dynamic>> allSongs = [
       {
         "image": "imgs/Người_Đầu_Tiên.jpg",
         "title": "Người Đầu Tiên",
         "artist": "Juky San",
-        "date": "October 30",
+        "date": DateTime.now(), // hôm nay
       },
       {
-        "image": "imgs/PhuongLy.jpg",
-        "title": "Vỗ tay",
-        "artist": "Phương Ly",
-        "date": "October 18",
+        "image": "imgs/Mất_Kết_Nối.jpg",
+        "title": "Mất Kết Nối",
+        "artist": "Dương Domic",
+        "date": DateTime.now().subtract(
+          const Duration(days: 1),
+        ), // hôm qua
       },
-      // 👉 Thêm bài mới tại đây
       {
         "image": "imgs/Vũ.jpg",
         "title": "Bình Yên",
         "artist": "Vũ.",
-        "date": "October 12",
+        "date": DateTime(2024, 10, 12), // ngày cũ
       },
-    ];
-
-    // 🎵 Danh sách bài hát "Trước đó"
-    final List<Map<String, String>> earlierSongs = [
       {
         "image": "imgs/HIEUTHUHAI.jpg",
         "title": "Vệ tinh",
         "artist": "HIEUTHUHAI",
-        "date": "Jul 5",
+        "date": DateTime(2024, 7, 5),
       },
       {
         "image": "imgs/QuanAP.jpg",
         "title": "Bông hoa đẹp nhất",
         "artist": "Quân A.P.",
-        "date": "May 15",
+        "date": DateTime(2024, 5, 15),
       },
     ];
+
+    // 📅 Lấy ngày hôm nay & hôm qua
+    final today = DateTime.now();
+    final yesterday = today.subtract(
+      const Duration(days: 1),
+    );
+
+    // 🧩 Phân loại bài hát
+    final todaySongs = allSongs
+        .where(
+          (s) => DateUtils.isSameDay(s['date'], today),
+        )
+        .toList();
+    final yesterdaySongs = allSongs
+        .where(
+          (s) => DateUtils.isSameDay(
+            s['date'],
+            yesterday,
+          ),
+        )
+        .toList();
+    final earlierSongs = allSongs
+        .where(
+          (s) => (s['date'] as DateTime).isBefore(
+            yesterday,
+          ),
+        )
+        .toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -60,7 +88,7 @@ class WhatsNewScreen extends StatelessWidget {
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color.fromARGB(255, 255, 255, 255),
+                  Colors.white,
                   Color.fromARGB(255, 253, 206, 237),
                 ],
                 begin: Alignment.topLeft,
@@ -71,7 +99,6 @@ class WhatsNewScreen extends StatelessWidget {
               crossAxisAlignment:
                   CrossAxisAlignment.start,
               children: [
-                // 🔹 Nút quay lại + tiêu đề
                 Row(
                   children: [
                     IconButton(
@@ -94,7 +121,6 @@ class WhatsNewScreen extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                // 🔹 Tab Bài hát / Album
                 Row(
                   children: [
                     _buildTab("Bài hát", true),
@@ -117,61 +143,99 @@ class WhatsNewScreen extends StatelessWidget {
                 crossAxisAlignment:
                     CrossAxisAlignment.start,
                 children: [
-                  const Text(
-                    "Mới phát hành",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                  if (todaySongs.isNotEmpty) ...[
+                    const Text(
+                      "Hôm nay",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  // Tự sinh danh sách
-                  Column(
-                    children: newSongs
-                        .map(
-                          (song) => Padding(
-                            padding:
-                                const EdgeInsets.only(
-                                  bottom: 16,
-                                ),
-                            child: _buildMusicCard(
-                              image: song["image"]!,
-                              title: song["title"]!,
-                              artist: song["artist"]!,
-                              date: song["date"]!,
-                            ),
+                    const SizedBox(height: 10),
+                    Column(
+                      children: todaySongs.map((song) {
+                        return Padding(
+                          padding:
+                              const EdgeInsets.only(
+                                bottom: 16,
+                              ),
+                          child: _buildMusicCard(
+                            context: context,
+                            image: song["image"],
+                            title: song["title"],
+                            artist: song["artist"],
+                            date: DateFormat(
+                              'MMM d',
+                            ).format(song["date"]),
                           ),
-                        )
-                        .toList(),
-                  ),
-
-                  const SizedBox(height: 10),
-                  const Text(
-                    "Trước đó",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
+                        );
+                      }).toList(),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  Column(
-                    children: earlierSongs
-                        .map(
-                          (song) => Padding(
-                            padding:
-                                const EdgeInsets.only(
-                                  bottom: 16,
-                                ),
-                            child: _buildMusicCard(
-                              image: song["image"]!,
-                              title: song["title"]!,
-                              artist: song["artist"]!,
-                              date: song["date"]!,
-                            ),
+                    const SizedBox(height: 20),
+                  ],
+                  if (yesterdaySongs.isNotEmpty) ...[
+                    const Text(
+                      "Hôm qua",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Column(
+                      children: yesterdaySongs.map((
+                        song,
+                      ) {
+                        return Padding(
+                          padding:
+                              const EdgeInsets.only(
+                                bottom: 16,
+                              ),
+                          child: _buildMusicCard(
+                            context: context,
+                            image: song["image"],
+                            title: song["title"],
+                            artist: song["artist"],
+                            date: DateFormat(
+                              'MMM d',
+                            ).format(song["date"]),
                           ),
-                        )
-                        .toList(),
-                  ),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 20),
+                  ],
+                  if (earlierSongs.isNotEmpty) ...[
+                    const Text(
+                      "Trước đó",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Column(
+                      children: earlierSongs.map((
+                        song,
+                      ) {
+                        return Padding(
+                          padding:
+                              const EdgeInsets.only(
+                                bottom: 16,
+                              ),
+                          child: _buildMusicCard(
+                            context: context,
+                            image: song["image"],
+                            title: song["title"],
+                            artist: song["artist"],
+                            date: DateFormat(
+                              'MMM d',
+                            ).format(song["date"]),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -208,6 +272,7 @@ class WhatsNewScreen extends StatelessWidget {
 
   // 🟣 Card hiển thị thông tin bài hát
   Widget _buildMusicCard({
+    required BuildContext context,
     required String image,
     required String title,
     required String artist,
@@ -282,13 +347,39 @@ class WhatsNewScreen extends StatelessWidget {
           Column(
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        "Đã thêm '$title' vào danh sách yêu thích",
+                      ),
+                    ),
+                  );
+                },
                 icon: const Icon(
                   Icons.favorite_border,
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PlayerScreen(
+                        songs: [
+                          {
+                            'title': title,
+                            'artist': artist,
+                            'img': image,
+                          },
+                        ],
+                        currentIndex: 0,
+                      ),
+                    ),
+                  );
+                },
                 icon: const Icon(
                   Icons.play_circle_fill,
                   color: Colors.deepPurple,

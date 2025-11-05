@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import './song_model.dart';
+import './player_screen.dart';
 
 class RecentlyPlayedScreen extends StatefulWidget {
   const RecentlyPlayedScreen({super.key});
@@ -11,8 +12,19 @@ class RecentlyPlayedScreen extends StatefulWidget {
 
 class _RecentlyPlayedScreenState
     extends State<RecentlyPlayedScreen> {
-  final Map<String, List<SongModel>> recentlyPlayed = {
-    "Hôm nay": [
+  final Map<String, List<SongModel>> recentlyPlayed =
+      {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    final today = _formatDateKey(DateTime.now());
+    final yesterday = _formatDateKey(
+      DateTime.now().subtract(const Duration(days: 1)),
+    );
+
+    recentlyPlayed[today] = [
       SongModel(
         title: "Hẹn Gặp Em Dưới Ánh Trăng",
         artist: "Hurrykng, HieuThuHai, Manbo",
@@ -23,49 +35,55 @@ class _RecentlyPlayedScreenState
         artist: "Shiki",
         image: "imgs/Perfect.jpg",
       ),
-      SongModel(
-        title: "3107 3",
-        artist: "W/N, Duongg, Nâu, titie",
-        image: "imgs/3107_3.jpg",
-      ),
-      SongModel(
-        title: "Đa Nghi",
-        artist: "Anh Trai Say Hi 2",
-        image: "imgs/Đa_Nghi.jpg",
-      ),
-    ],
-    "Hôm qua": [
+    ];
+
+    recentlyPlayed[yesterday] = [
       SongModel(
         title: "Ngủ Một Mình",
         artist: "HIEUTHUHAI",
         image: "imgs/HIEUTHUHAI.jpg",
       ),
-      SongModel(
-        title: "Ếch Ngoài Đáy Giếng",
-        artist: "EM XINH 'SAY HI', Phương Mỹ Chi",
-        image: "imgs/Ếch_Ngoài_Đáy_Giếng.jpg",
-      ),
-      SongModel(
-        title: "Chăm Hoa",
-        artist: "MONO",
-        image: "imgs/Chăm_Hoa.jpg",
-      ),
-      SongModel(
-        title: "Muộn Rồi Mà Sao Còn",
-        artist: "MTP",
-        image: "imgs/Muon_Roi_Ma_Sao_Con.jpg",
-      ),
-    ],
-  };
+    ];
+  }
 
-  // 🧩 Hàm thêm bài hát
-  void _addSong(String group, SongModel newSong) {
+  /// Định dạng ngày dạng dd/MM/yyyy
+  String _formatDateKey(DateTime date) {
+    return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+  }
+
+  /// 🧩 Thêm bài hát mới — tự động di chuyển hôm nay -> hôm qua
+  void _addSong(SongModel newSong) {
+    final today = _formatDateKey(DateTime.now());
+    final yesterdayDate = DateTime.now().subtract(
+      const Duration(days: 1),
+    );
+    final yesterdayKey = _formatDateKey(yesterdayDate);
+
     setState(() {
-      recentlyPlayed[group]?.add(newSong);
+      // Nếu có "hôm nay" thì chuyển nó sang "hôm qua"
+      if (recentlyPlayed.containsKey(today)) {
+        final oldTodaySongs = recentlyPlayed[today]!;
+
+        // Gộp với hôm qua nếu trùng key
+        if (recentlyPlayed.containsKey(yesterdayKey)) {
+          recentlyPlayed[yesterdayKey]!.insertAll(
+            0,
+            oldTodaySongs,
+          );
+        } else {
+          recentlyPlayed[yesterdayKey] = List.from(
+            oldTodaySongs,
+          );
+        }
+
+        recentlyPlayed.remove(today);
+      }
+
+      // Tạo danh sách mới cho hôm nay chỉ có bài mới
+      recentlyPlayed[today] = [newSong];
     });
   }
 
-  // 🧩 Form thêm bài hát
   void _showAddSongDialog() {
     final titleController = TextEditingController();
     final artistController = TextEditingController();
@@ -93,8 +111,7 @@ class _RecentlyPlayedScreenState
               TextField(
                 controller: imageController,
                 decoration: const InputDecoration(
-                  labelText:
-                      "Đường dẫn ảnh (VD: imgs/new_song.jpg)",
+                  labelText: "Ảnh (VD: imgs/song.jpg)",
                 ),
               ),
             ],
@@ -110,7 +127,6 @@ class _RecentlyPlayedScreenState
               if (titleController.text.isNotEmpty &&
                   artistController.text.isNotEmpty) {
                 _addSong(
-                  "Hôm nay",
                   SongModel(
                     title: titleController.text,
                     artist: artistController.text,
@@ -130,8 +146,41 @@ class _RecentlyPlayedScreenState
     );
   }
 
+  String formatDate(String dateKey) {
+    final now = DateTime.now();
+    final parts = dateKey.split('/');
+    if (parts.length != 3) return dateKey;
+
+    final date = DateTime(
+      int.parse(parts[2]),
+      int.parse(parts[1]),
+      int.parse(parts[0]),
+    );
+    final diff = now.difference(date).inDays;
+
+    if (diff == 0) return "Hôm nay";
+    if (diff == 1) return "Hôm qua";
+    return dateKey;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final sortedEntries =
+        recentlyPlayed.entries.toList()..sort((a, b) {
+          DateTime parseDate(String key) {
+            final parts = key.split('/');
+            return DateTime(
+              int.parse(parts[2]),
+              int.parse(parts[1]),
+              int.parse(parts[0]),
+            );
+          }
+
+          return parseDate(
+            b.key,
+          ).compareTo(parseDate(a.key));
+        });
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -159,7 +208,7 @@ class _RecentlyPlayedScreenState
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
-        children: recentlyPlayed.entries.map((entry) {
+        children: sortedEntries.map((entry) {
           String date = entry.key;
           List<SongModel> songs = entry.value;
 
@@ -168,7 +217,7 @@ class _RecentlyPlayedScreenState
                 CrossAxisAlignment.start,
             children: [
               Text(
-                date,
+                formatDate(date),
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -217,12 +266,23 @@ class _RecentlyPlayedScreenState
                       size: 30,
                     ),
                     onTap: () {
-                      ScaffoldMessenger.of(
+                      final convertedSongs = songs
+                          .map<Map<String, String>>(
+                            (s) => {
+                              'title': s.title,
+                              'artist': s.artist,
+                              'img': s.image,
+                            },
+                          )
+                          .toList();
+
+                      Navigator.push(
                         context,
-                      ).showSnackBar(
-                        SnackBar(
-                          content: Text(
-                            "🎵 Đang mở: ${song.title}",
+                        MaterialPageRoute(
+                          builder: (_) => PlayerScreen(
+                            songs: convertedSongs,
+                            currentIndex: songs
+                                .indexOf(song),
                           ),
                         ),
                       );

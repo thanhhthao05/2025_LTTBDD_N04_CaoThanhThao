@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share_plus/share_plus.dart';
+import '../screens/account/favorite_manager.dart';
 import 'dart:async';
 import 'dart:ui';
 import 'share_song.dart';
+import 'song_model.dart';
 
 class PlayerScreen extends StatefulWidget {
   final List<Map<String, String>> songs;
@@ -38,13 +40,22 @@ class _PlayerScreenState extends State<PlayerScreen>
   void initState() {
     super.initState();
     currentIndex = widget.currentIndex;
-
     _rotationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 25),
     )..repeat();
 
     startTimer();
+
+    // 🔹 Kiểm tra bài hát hiện tại có nằm trong danh sách yêu thích không
+    final song = SongModel(
+      title: currentSong['title'] ?? '',
+      artist: currentSong['artist'] ?? '',
+      image: currentSong['img'] ?? '',
+    );
+    setState(() {
+      isFavorite = FavoriteManager.isFavorite(song);
+    });
   }
 
   void startTimer() {
@@ -425,10 +436,31 @@ class _PlayerScreenState extends State<PlayerScreen>
                                   : Colors.white70,
                               size: 28,
                             ),
-                            onPressed: () => setState(
-                              () => isFavorite =
-                                  !isFavorite,
-                            ),
+                            onPressed: () async {
+                              final song = SongModel(
+                                title:
+                                    currentSong['title'] ??
+                                    '',
+                                artist:
+                                    currentSong['artist'] ??
+                                    '',
+                                image:
+                                    currentSong['img'] ??
+                                    '',
+                              );
+
+                              await FavoriteManager.toggleFavorite(
+                                song,
+                              );
+                              final fav =
+                                  await FavoriteManager.isFavorite(
+                                    song,
+                                  );
+
+                              setState(
+                                () => isFavorite = fav,
+                              );
+                            },
                           ),
                         ],
                       ),

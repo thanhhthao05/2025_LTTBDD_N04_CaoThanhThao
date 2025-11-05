@@ -4,6 +4,11 @@ import '../auth/register_screen.dart';
 import '../auth/auth_state.dart';
 import '../home/notifications/whats_new_screen.dart';
 import '../settings/settings_screen.dart';
+import '../../player/recently_played_screen.dart';
+import '../../player/player_screen.dart';
+import '../../player/song_model.dart';
+import 'favorite_songs_screen.dart';
+import 'favorite_manager.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -41,8 +46,7 @@ class _AccountScreenState
     final List<Map<String, dynamic>> playlists = [
       {
         'icon': Icons.music_note,
-        'title': 'My Chill Vibes',
-        'songs': 18,
+        'title': 'Nghe gần đây',
       },
       {
         'icon': Icons.favorite,
@@ -53,12 +57,12 @@ class _AccountScreenState
 
     final List<Map<String, String>> suggested = [
       {
-        'title': 'Nhạc Chill Yêu Đời',
-        'img': 'imgs/Nhạc_Chill_Yêu_Đời.jpg',
+        'title': 'Tràn Bộ Nhớ',
+        'img': 'imgs/Tràn_Bộ_Nhớ.jpg',
       },
       {
-        'title': 'HIEUTHUHAI',
-        'img': 'imgs/HIEUTHUHAI.jpg',
+        'title': 'Bước Qua Nhau',
+        'img': 'imgs/Buoc_Qua_Nhau.jpg',
       },
       {'title': 'Perfect', 'img': 'imgs/Perfect.jpg'},
       {'title': '3107 3', 'img': 'imgs/3107_3.jpg'},
@@ -158,20 +162,68 @@ class _AccountScreenState
             ),
             const SizedBox(height: 10),
 
-            for (final p in playlists)
-              ListTile(
-                leading: Icon(
-                  p['icon'] as IconData,
-                  color: Colors.black87,
-                ),
-                title: Text(p['title'] as String),
-                subtitle: Text(
-                  "${p['songs']} bài hát",
-                ),
-                dense: true,
-                contentPadding: EdgeInsets.zero,
-                onTap: () {},
-              ),
+            // 🎧 Playlist của bạn (cập nhật động)
+            ValueListenableBuilder<List<SongModel>>(
+              valueListenable:
+                  FavoriteManager.favoriteSongs,
+              builder: (context, favoriteSongs, _) {
+                final playlists = [
+                  {
+                    'icon': Icons.music_note,
+                    'title': 'Nghe gần đây',
+                  },
+                  {
+                    'icon': Icons.favorite,
+                    'title': 'Nhạc yêu thích',
+                    'songs': favoriteSongs.length,
+                  },
+                ];
+
+                return Column(
+                  children: playlists.map((p) {
+                    return ListTile(
+                      leading: Icon(
+                        p['icon'] as IconData,
+                        color: Colors.black87,
+                      ),
+                      title: Text(
+                        p['title'] as String,
+                      ),
+                      subtitle:
+                          p['title'] ==
+                              'Nhạc yêu thích'
+                          ? Text(
+                              "${p['songs']} bài hát",
+                            )
+                          : null,
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      onTap: () {
+                        if (p['title'] ==
+                            'Nghe gần đây') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const RecentlyPlayedScreen(),
+                            ),
+                          );
+                        } else if (p['title'] ==
+                            'Nhạc yêu thích') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const FavoriteSongsScreen(),
+                            ),
+                          );
+                        }
+                      },
+                    );
+                  }).toList(),
+                );
+              },
+            ),
 
             const SizedBox(height: 10),
             const Divider(
@@ -189,6 +241,7 @@ class _AccountScreenState
             ),
             const SizedBox(height: 10),
 
+            // --- Playlist được gợi ý (khi đã đăng nhập) ---
             Expanded(
               child: ListView.builder(
                 itemCount: suggested.length,
@@ -206,11 +259,21 @@ class _AccountScreenState
                       ),
                     ),
                     title: Text(s['title']!),
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                    ),
                     contentPadding: EdgeInsets.zero,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PlayerScreen(
+                            songs: [
+                              s,
+                            ], // Truyền vào danh sách chứa 1 bài hát
+                            currentIndex:
+                                0, // Mở từ bài đầu tiên (chính bài được nhấn)
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
               ),
@@ -227,12 +290,12 @@ class _AccountScreenState
   Widget _buildLoggedOutUI(BuildContext context) {
     final suggested = [
       {
-        'title': 'Nhạc Chill Yêu Đời',
-        'img': 'imgs/Nhạc_Chill_Yêu_Đời.jpg',
+        'title': 'Tràn Bộ Nhớ',
+        'img': 'imgs/Tràn_Bộ_Nhớ.jpg',
       },
       {
-        'title': 'HIEUTHUHAI',
-        'img': 'imgs/HIEUTHUHAI.jpg',
+        'title': 'Bước Qua Nhau',
+        'img': 'imgs/Buoc_Qua_Nhau.jpg',
       },
     ];
 
@@ -411,6 +474,7 @@ class _AccountScreenState
               ),
               const SizedBox(height: 10),
 
+              // --- Playlist được gợi ý (khi chưa đăng nhập) ---
               Column(
                 children: suggested.map((s) {
                   return ListTile(
@@ -425,11 +489,21 @@ class _AccountScreenState
                       ),
                     ),
                     title: Text(s['title']!),
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                    ),
                     contentPadding: EdgeInsets.zero,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => PlayerScreen(
+                            songs: [
+                              s,
+                            ], // Truyền vào danh sách chứa 1 bài hát
+                            currentIndex:
+                                0, // Mở từ bài đầu tiên (chính bài được nhấn)
+                          ),
+                        ),
+                      );
+                    },
                   );
                 }).toList(),
               ),

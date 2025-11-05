@@ -1,3 +1,4 @@
+// màn hình chi tiết nghệ sĩ
 import 'package:flutter/material.dart';
 import '../../player/player_screen.dart';
 

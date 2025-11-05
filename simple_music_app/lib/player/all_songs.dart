@@ -53,7 +53,10 @@ final List<Map<String, String>> ngheGanDay = [
 final List<Map<String, String>> hot = [
   {'title': 'APT', 'img': 'imgs/Charts_Asia.jpg'},
   {'title': '3107 3', 'img': 'imgs/3107_3.jpg'},
-  {'title': 'Cupid', 'img': 'imgs/cupid.jpg'},
+  {
+    'title': 'Tràn Bộ Nhớ',
+    'img': 'imgs/Tràn_Bộ_Nhớ.jpg',
+  },
   {
     'title': 'Ain’t My Fault',
     'img': 'imgs/aint_my_fault.jpg',
