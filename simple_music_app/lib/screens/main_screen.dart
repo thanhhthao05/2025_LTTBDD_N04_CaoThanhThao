@@ -8,7 +8,7 @@ class MainScreen extends StatefulWidget {
   final int initialIndex;
   const MainScreen({
     super.key,
-    this.initialIndex = 0,
+    this.initialIndex = 3,
   }); // Mặc định chọn tab
 
   @override

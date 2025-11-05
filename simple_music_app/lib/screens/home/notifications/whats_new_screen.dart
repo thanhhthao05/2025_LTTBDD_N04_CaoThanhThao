@@ -2,19 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../player/player_screen.dart';
 import '../../../player/song_model.dart';
+import '../../account/favorite_manager.dart';
 
-class WhatsNewScreen extends StatelessWidget {
+class WhatsNewScreen extends StatefulWidget {
   const WhatsNewScreen({super.key});
 
   @override
+  State<WhatsNewScreen> createState() =>
+      _WhatsNewScreenState();
+}
+
+class _WhatsNewScreenState
+    extends State<WhatsNewScreen> {
+  @override
   Widget build(BuildContext context) {
-    // 🎵 Danh sách bài hát có ngày phát hành
     final List<Map<String, dynamic>> allSongs = [
       {
         "image": "imgs/Người_Đầu_Tiên.jpg",
         "title": "Người Đầu Tiên",
         "artist": "Juky San",
-        "date": DateTime.now(), // hôm nay
+        "date": DateTime.now(),
       },
       {
         "image": "imgs/Mất_Kết_Nối.jpg",
@@ -22,13 +29,13 @@ class WhatsNewScreen extends StatelessWidget {
         "artist": "Dương Domic",
         "date": DateTime.now().subtract(
           const Duration(days: 1),
-        ), // hôm qua
+        ),
       },
       {
         "image": "imgs/Vũ.jpg",
         "title": "Bình Yên",
         "artist": "Vũ.",
-        "date": DateTime(2024, 10, 12), // ngày cũ
+        "date": DateTime(2024, 10, 12),
       },
       {
         "image": "imgs/HIEUTHUHAI.jpg",
@@ -44,13 +51,11 @@ class WhatsNewScreen extends StatelessWidget {
       },
     ];
 
-    // 📅 Lấy ngày hôm nay & hôm qua
     final today = DateTime.now();
     final yesterday = today.subtract(
       const Duration(days: 1),
     );
 
-    // 🧩 Phân loại bài hát
     final todaySongs = allSongs
         .where(
           (s) => DateUtils.isSameDay(s['date'], today),
@@ -245,7 +250,7 @@ class WhatsNewScreen extends StatelessWidget {
     );
   }
 
-  // 🟣 Tab "Bài hát" / "Album"
+  // 🟣 Tab
   Widget _buildTab(String text, bool isSelected) {
     return Column(
       children: [
@@ -270,7 +275,7 @@ class WhatsNewScreen extends StatelessWidget {
     );
   }
 
-  // 🟣 Card hiển thị thông tin bài hát
+  // 🟣 Card bài hát (đã thêm tim)
   Widget _buildMusicCard({
     required BuildContext context,
     required String image,
@@ -278,96 +283,32 @@ class WhatsNewScreen extends StatelessWidget {
     required String artist,
     required String date,
   }) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(
-          color: Colors.grey.shade300,
-        ),
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.15),
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.asset(
-              image,
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
-              children: [
-                Text(
-                  date,
-                  style: const TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
-                  ),
+    final songModel = SongModel(
+      title: title,
+      artist: artist,
+      image: image,
+    );
+
+    return ValueListenableBuilder(
+      valueListenable: FavoriteManager.favoriteSongs,
+      builder: (context, favorites, _) {
+        final isFavorite = FavoriteManager.isFavorite(
+          songModel,
+        );
+
+        return InkWell(
+          borderRadius: BorderRadius.circular(10),
+          onTap: () {
+            Navigator.push(
+              context,
+              PageRouteBuilder(
+                transitionDuration: const Duration(
+                  milliseconds: 400,
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  artist,
-                  style: const TextStyle(
-                    color: Colors.black54,
-                    fontSize: 13,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  "Single",
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            children: [
-              IconButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(
-                    SnackBar(
-                      content: Text(
-                        "Đã thêm '$title' vào danh sách yêu thích",
-                      ),
-                    ),
-                  );
-                },
-                icon: const Icon(
-                  Icons.favorite_border,
-                ),
-              ),
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => PlayerScreen(
+                pageBuilder: (_, animation, __) =>
+                    FadeTransition(
+                      opacity: animation,
+                      child: PlayerScreen(
                         songs: [
                           {
                             'title': title,
@@ -378,17 +319,109 @@ class WhatsNewScreen extends StatelessWidget {
                         currentIndex: 0,
                       ),
                     ),
-                  );
-                },
-                icon: const Icon(
-                  Icons.play_circle_fill,
-                  color: Colors.deepPurple,
-                ),
               ),
-            ],
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(
+                color: Colors.grey.shade300,
+              ),
+              borderRadius: BorderRadius.circular(10),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.15),
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: Row(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    8,
+                  ),
+                  child: Image.asset(
+                    image,
+                    width: 80,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        date,
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        artist,
+                        style: const TextStyle(
+                          color: Colors.black54,
+                          fontSize: 13,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      const Text(
+                        "Single",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    isFavorite
+                        ? Icons.favorite
+                        : Icons.favorite_border,
+                    color: isFavorite
+                        ? Colors.red
+                        : Colors.grey,
+                  ),
+                  onPressed: () {
+                    FavoriteManager.toggleFavorite(
+                      songModel,
+                    );
+
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          isFavorite
+                              ? "Đã xóa '$title' khỏi danh sách yêu thích"
+                              : "Đã thêm '$title' vào danh sách yêu thích",
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

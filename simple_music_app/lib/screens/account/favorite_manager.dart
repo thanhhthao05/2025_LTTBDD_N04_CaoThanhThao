@@ -7,11 +7,11 @@ import '../../player/song_model.dart';
 class FavoriteManager {
   static const String _key = 'favorite_songs';
 
-  // Danh sách bài hát yêu thích (ValueNotifier để UI cập nhật realtime)
+  /// Danh sách bài hát yêu thích (ValueNotifier để UI cập nhật realtime)
   static final ValueNotifier<List<SongModel>>
   favoriteSongs = ValueNotifier<List<SongModel>>([]);
 
-  /// 🟣 Khởi tạo: đọc dữ liệu từ SharedPreferences khi app khởi động
+  // 🔵 Khởi tạo danh sách bài hát yêu thích từ SharedPreferences
   static Future<void> init() async {
     final prefs =
         await SharedPreferences.getInstance();
