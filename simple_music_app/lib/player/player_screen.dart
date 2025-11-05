@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import '../screens/account/favorite_manager.dart';
+import '../screens/song_options_menu.dart';
 import 'dart:async';
 import 'dart:ui';
 import 'share_song.dart';
@@ -47,15 +48,13 @@ class _PlayerScreenState extends State<PlayerScreen>
 
     startTimer();
 
-    // 🔹 Kiểm tra bài hát hiện tại có nằm trong danh sách yêu thích không
+    // Kiểm tra trạng thái yêu thích ban đầu
     final song = SongModel(
       title: currentSong['title'] ?? '',
       artist: currentSong['artist'] ?? '',
       image: currentSong['img'] ?? '',
     );
-    setState(() {
-      isFavorite = FavoriteManager.isFavorite(song);
-    });
+    isFavorite = FavoriteManager.isFavorite(song);
   }
 
   void startTimer() {
@@ -120,7 +119,6 @@ class _PlayerScreenState extends State<PlayerScreen>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          // 🌆 Nền mờ từ ảnh
           Image.asset(song['img']!, fit: BoxFit.cover),
           BackdropFilter(
             filter: ImageFilter.blur(
@@ -137,7 +135,6 @@ class _PlayerScreenState extends State<PlayerScreen>
               mainAxisAlignment:
                   MainAxisAlignment.spaceBetween,
               children: [
-                // AppBar
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
@@ -164,12 +161,52 @@ class _PlayerScreenState extends State<PlayerScreen>
                           fontSize: 18,
                         ),
                       ),
-                      IconButton(
-                        icon: const Icon(
-                          Icons.more_vert,
-                          color: Colors.white,
-                        ),
-                        onPressed: () {},
+
+                      // 🔹 Menu ⋮ (SongOptionsMenu)
+                      SongOptionsMenu(
+                        song: {
+                          'title':
+                              currentSong['title'] ??
+                              '',
+                          'artist':
+                              currentSong['artist'] ??
+                              '',
+                          'img':
+                              currentSong['img'] ?? '',
+                        },
+                        onPlay: () {
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                '🎧 Đang phát bài hát...',
+                              ),
+                            ),
+                          );
+                        },
+                        onAddToPlaylist: () {
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                '➕ Đã thêm vào danh sách phát',
+                              ),
+                            ),
+                          );
+                        },
+                        onDelete: () {
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                '🗑 Đã xóa khỏi danh sách phát',
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ],
                   ),
@@ -210,6 +247,8 @@ class _PlayerScreenState extends State<PlayerScreen>
                       ),
                     ),
                     const SizedBox(height: 10),
+
+                    // Nút chia sẻ & yêu thích
                     Padding(
                       padding:
                           const EdgeInsets.symmetric(
@@ -220,6 +259,7 @@ class _PlayerScreenState extends State<PlayerScreen>
                             MainAxisAlignment
                                 .spaceBetween,
                         children: [
+                          // Nút chia sẻ
                           IconButton(
                             icon: Icon(
                               Icons.share,
@@ -228,203 +268,18 @@ class _PlayerScreenState extends State<PlayerScreen>
                               size: 28,
                             ),
                             onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                backgroundColor:
-                                    Colors.black87,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.vertical(
-                                        top:
-                                            Radius.circular(
-                                              20,
-                                            ),
-                                      ),
-                                ),
-                                builder: (context) => Padding(
-                                  padding:
-                                      const EdgeInsets.all(
-                                        16,
-                                      ),
-                                  child: Column(
-                                    mainAxisSize:
-                                        MainAxisSize
-                                            .min,
-                                    children: [
-                                      const Text(
-                                        'Chia sẻ qua',
-                                        style: TextStyle(
-                                          color: Colors
-                                              .white,
-                                          fontSize: 18,
-                                          fontWeight:
-                                              FontWeight
-                                                  .bold,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 12,
-                                      ),
-                                      ListTile(
-                                        leading: const FaIcon(
-                                          FontAwesomeIcons
-                                              .facebook,
-                                          color: Colors
-                                              .white,
-                                        ),
-                                        title: const Text(
-                                          'Facebook',
-                                          style: TextStyle(
-                                            color: Colors
-                                                .white70,
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          shareSong(
-                                            title:
-                                                song['title'] ??
-                                                'Bài hát',
-                                            artist:
-                                                song['artist'] ??
-                                                'Không rõ',
-                                            platform:
-                                                'facebook',
-                                          );
-                                          Navigator.pop(
-                                            context,
-                                          );
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const FaIcon(
-                                          FontAwesomeIcons
-                                              .facebookMessenger,
-                                          color: Colors
-                                              .blueAccent,
-                                        ),
-                                        title: const Text(
-                                          'Messenger',
-                                          style: TextStyle(
-                                            color: Colors
-                                                .white70,
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          shareSong(
-                                            title:
-                                                song['title'] ??
-                                                'Bài hát',
-                                            artist:
-                                                song['artist'] ??
-                                                'Không rõ',
-                                            platform:
-                                                'messenger',
-                                          );
-                                          Navigator.pop(
-                                            context,
-                                          );
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const FaIcon(
-                                          FontAwesomeIcons
-                                              .instagram,
-                                          color: Colors
-                                              .pinkAccent,
-                                        ),
-                                        title: const Text(
-                                          'Instagram',
-                                          style: TextStyle(
-                                            color: Colors
-                                                .white70,
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          shareSong(
-                                            title:
-                                                song['title'] ??
-                                                'Bài hát',
-                                            artist:
-                                                song['artist'] ??
-                                                'Không rõ',
-                                            platform:
-                                                'instagram',
-                                          );
-                                          Navigator.pop(
-                                            context,
-                                          );
-                                        },
-                                      ),
-                                      ListTile(
-                                        leading: const FaIcon(
-                                          FontAwesomeIcons
-                                              .commentDots,
-                                          color: Colors
-                                              .greenAccent,
-                                        ),
-                                        title: const Text(
-                                          'Zalo',
-                                          style: TextStyle(
-                                            color: Colors
-                                                .white70,
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          shareSong(
-                                            title:
-                                                song['title'] ??
-                                                'Bài hát',
-                                            artist:
-                                                song['artist'] ??
-                                                'Không rõ',
-                                            platform:
-                                                'zalo',
-                                          );
-                                          Navigator.pop(
-                                            context,
-                                          );
-                                        },
-                                      ),
-
-                                      const Divider(
-                                        color: Colors
-                                            .white24,
-                                      ),
-                                      ListTile(
-                                        leading: const Icon(
-                                          Icons
-                                              .more_horiz,
-                                          color: Colors
-                                              .white,
-                                        ),
-                                        title: const Text(
-                                          'Khác...',
-                                          style: TextStyle(
-                                            color: Colors
-                                                .white70,
-                                          ),
-                                        ),
-                                        onTap: () {
-                                          shareSong(
-                                            title:
-                                                song['title'] ??
-                                                'Bài hát',
-                                            artist:
-                                                song['artist'] ??
-                                                'Không rõ',
-                                          );
-                                          Navigator.pop(
-                                            context,
-                                          );
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                              shareSong(
+                                title:
+                                    song['title'] ??
+                                    'Bài hát',
+                                artist:
+                                    song['artist'] ??
+                                    'Không rõ',
                               );
                             },
                           ),
 
+                          // Nút yêu thích
                           IconButton(
                             icon: Icon(
                               isFavorite
@@ -437,7 +292,7 @@ class _PlayerScreenState extends State<PlayerScreen>
                               size: 28,
                             ),
                             onPressed: () async {
-                              final song = SongModel(
+                              final s = SongModel(
                                 title:
                                     currentSong['title'] ??
                                     '',
@@ -448,15 +303,13 @@ class _PlayerScreenState extends State<PlayerScreen>
                                     currentSong['img'] ??
                                     '',
                               );
-
                               await FavoriteManager.toggleFavorite(
-                                song,
+                                s,
                               );
                               final fav =
                                   await FavoriteManager.isFavorite(
-                                    song,
+                                    s,
                                   );
-
                               setState(
                                 () => isFavorite = fav,
                               );
@@ -510,7 +363,7 @@ class _PlayerScreenState extends State<PlayerScreen>
                   ),
                 ),
 
-                // Nút điều khiển
+                // Nút điều khiển nhạc
                 Padding(
                   padding: const EdgeInsets.only(
                     bottom: 25,
