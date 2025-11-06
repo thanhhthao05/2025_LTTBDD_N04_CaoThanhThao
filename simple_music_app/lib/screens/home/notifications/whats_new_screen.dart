@@ -210,6 +210,7 @@ class _WhatsNewScreenState
                             date: DateFormat(
                               'MMM d',
                             ).format(song["date"]),
+                            allSongs: allSongs,
                           ),
                         );
                       }).toList(),
@@ -254,6 +255,7 @@ class _WhatsNewScreenState
                             date: DateFormat(
                               'MMM d',
                             ).format(song["date"]),
+                            allSongs: allSongs,
                           ),
                         );
                       }).toList(),
@@ -298,6 +300,7 @@ class _WhatsNewScreenState
                             date: DateFormat(
                               'MMM d',
                             ).format(song["date"]),
+                            allSongs: allSongs,
                           ),
                         );
                       }).toList(),
@@ -356,6 +359,7 @@ class _WhatsNewScreenState
     required String title,
     required String artist,
     required String date,
+    required List<Map<String, dynamic>> allSongs,
   }) {
     final songModel = SongModel(
       title: title,
@@ -373,29 +377,34 @@ class _WhatsNewScreenState
         return InkWell(
           borderRadius: BorderRadius.circular(10),
           onTap: () {
+            // 🔹 Tạo danh sách toàn bộ bài hát dưới dạng Map
+            final songsList = allSongs
+                .map(
+                  (s) => {
+                    'title': s['title'] as String,
+                    'artist': s['artist'] as String,
+                    'img': s['image'] as String,
+                  },
+                )
+                .toList();
+
+            // 🔹 Xác định vị trí bài hát hiện tại trong danh sách
+            final currentIndex = songsList.indexWhere(
+              (s) => s['title'] == title,
+            );
+
+            // 🔹 Mở PlayerScreen với danh sách và vị trí hiện tại
             Navigator.push(
               context,
-              PageRouteBuilder(
-                transitionDuration: const Duration(
-                  milliseconds: 400,
+              MaterialPageRoute(
+                builder: (_) => PlayerScreen(
+                  songs: songsList,
+                  currentIndex: currentIndex,
                 ),
-                pageBuilder: (_, animation, __) =>
-                    FadeTransition(
-                      opacity: animation,
-                      child: PlayerScreen(
-                        songs: [
-                          {
-                            'title': title,
-                            'artist': artist,
-                            'img': image,
-                          },
-                        ],
-                        currentIndex: 0,
-                      ),
-                    ),
               ),
             );
           },
+
           child: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(

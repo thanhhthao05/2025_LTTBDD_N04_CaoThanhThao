@@ -291,6 +291,17 @@ class _AccountScreenState
                 itemCount: suggested.length,
                 itemBuilder: (context, index) {
                   final s = suggested[index];
+                  // Chuyển đổi danh sách suggested thành SongModel list
+                  final songListConverted = suggested
+                      .map(
+                        (item) => {
+                          'title': item['title']!,
+                          'artist': '',
+                          'img': item['img']!,
+                        },
+                      )
+                      .toList();
+
                   return ListTile(
                     leading: ClipRRect(
                       borderRadius:
@@ -309,11 +320,10 @@ class _AccountScreenState
                         context,
                         MaterialPageRoute(
                           builder: (_) => PlayerScreen(
-                            songs: [
-                              s,
-                            ], // Truyền vào danh sách chứa 1 bài hát
+                            songs:
+                                songListConverted, // truyền toàn bộ danh sách
                             currentIndex:
-                                0, // Mở từ bài đầu tiên (chính bài được nhấn)
+                                index, // vị trí bài được nhấn
                           ),
                         ),
                       );
@@ -528,7 +538,20 @@ class _AccountScreenState
 
               // --- Playlist được gợi ý (khi chưa đăng nhập) ---
               Column(
-                children: suggested.map((s) {
+                children: List.generate(suggested.length, (
+                  index,
+                ) {
+                  final s = suggested[index];
+                  final songListConverted = suggested
+                      .map(
+                        (item) => {
+                          'title': item['title']!,
+                          'artist': '',
+                          'img': item['img']!,
+                        },
+                      )
+                      .toList();
+
                   return ListTile(
                     leading: ClipRRect(
                       borderRadius:
@@ -547,17 +570,15 @@ class _AccountScreenState
                         context,
                         MaterialPageRoute(
                           builder: (_) => PlayerScreen(
-                            songs: [
-                              s,
-                            ], // Truyền vào danh sách chứa 1 bài hát
+                            songs: songListConverted,
                             currentIndex:
-                                0, // Mở từ bài đầu tiên (chính bài được nhấn)
+                                index, // Vị trí bài được nhấn
                           ),
                         ),
                       );
                     },
                   );
-                }).toList(),
+                }),
               ),
 
               const SizedBox(height: 40),
