@@ -79,7 +79,9 @@ class _WhatsNewScreenState
         .toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(
+        context,
+      ).scaffoldBackgroundColor,
       body: Column(
         children: [
           // 🟢 PHẦN TIÊU ĐỀ
@@ -110,9 +112,11 @@ class _WhatsNewScreenState
                     IconButton(
                       onPressed: () =>
                           Navigator.pop(context),
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_back,
-                        color: Colors.black,
+                        color: Theme.of(
+                          context,
+                        ).iconTheme.color,
                       ),
                     ),
                     const SizedBox(width: 4),
@@ -120,11 +124,20 @@ class _WhatsNewScreenState
                       AppLocalizations.of(
                         context,
                       ).whatsNew,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style:
+                          Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(
+                                fontSize: 22,
+                                fontWeight:
+                                    FontWeight.bold,
+                              ) ??
+                          const TextStyle(
+                            fontSize: 22,
+                            fontWeight:
+                                FontWeight.bold,
+                          ),
                     ),
                   ],
                 ),
@@ -166,10 +179,20 @@ class _WhatsNewScreenState
                       AppLocalizations.of(
                         context,
                       ).today,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style:
+                          Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(
+                                fontSize: 18,
+                                fontWeight:
+                                    FontWeight.bold,
+                              ) ??
+                          const TextStyle(
+                            fontSize: 18,
+                            fontWeight:
+                                FontWeight.bold,
+                          ),
                     ),
                     const SizedBox(height: 10),
                     Column(
@@ -198,10 +221,20 @@ class _WhatsNewScreenState
                       AppLocalizations.of(
                         context,
                       ).yesterday,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style:
+                          Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(
+                                fontSize: 18,
+                                fontWeight:
+                                    FontWeight.bold,
+                              ) ??
+                          const TextStyle(
+                            fontSize: 18,
+                            fontWeight:
+                                FontWeight.bold,
+                          ),
                     ),
                     const SizedBox(height: 10),
                     Column(
@@ -232,10 +265,20 @@ class _WhatsNewScreenState
                       AppLocalizations.of(
                         context,
                       ).earlier,
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style:
+                          Theme.of(context)
+                              .textTheme
+                              .titleLarge
+                              ?.copyWith(
+                                fontSize: 18,
+                                fontWeight:
+                                    FontWeight.bold,
+                              ) ??
+                          const TextStyle(
+                            fontSize: 18,
+                            fontWeight:
+                                FontWeight.bold,
+                          ),
                     ),
                     const SizedBox(height: 10),
                     Column(
@@ -275,20 +318,32 @@ class _WhatsNewScreenState
       children: [
         Text(
           text,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: isSelected
-                ? FontWeight.bold
-                : FontWeight.normal,
-            color: Colors.black,
-          ),
+          style:
+              Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(
+                fontSize: 16,
+                fontWeight: isSelected
+                    ? FontWeight.bold
+                    : FontWeight.normal,
+              ) ??
+              TextStyle(
+                fontSize: 16,
+                fontWeight: isSelected
+                    ? FontWeight.bold
+                    : FontWeight.normal,
+              ),
         ),
         if (isSelected)
           Container(
             margin: const EdgeInsets.only(top: 4),
             height: 3,
             width: 50,
-            color: Colors.black,
+            color:
+                Theme.of(
+                  context,
+                ).textTheme.titleMedium?.color ??
+                Colors.black,
           ),
       ],
     );
@@ -344,14 +399,18 @@ class _WhatsNewScreenState
           child: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: Theme.of(context).cardColor,
               border: Border.all(
-                color: Colors.grey.shade300,
+                color: Theme.of(context).dividerColor,
               ),
               borderRadius: BorderRadius.circular(10),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.grey.withOpacity(0.15),
+                  color:
+                      Theme.of(context).brightness ==
+                          Brightness.light
+                      ? Colors.grey.withOpacity(0.15)
+                      : Colors.black.withOpacity(0.2),
                   blurRadius: 6,
                   offset: const Offset(0, 3),
                 ),
@@ -378,33 +437,79 @@ class _WhatsNewScreenState
                     children: [
                       Text(
                         date,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                        ),
+                        style:
+                            Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).hintColor,
+                                  fontSize: 12,
+                                ) ??
+                            const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
                       ),
                       const SizedBox(height: 4),
                       Text(
                         title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style:
+                            Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(
+                                  fontSize: 16,
+                                  fontWeight:
+                                      FontWeight.bold,
+                                ) ??
+                            const TextStyle(
+                              fontSize: 16,
+                              fontWeight:
+                                  FontWeight.bold,
+                            ),
                       ),
                       Text(
                         artist,
-                        style: const TextStyle(
-                          color: Colors.black54,
-                          fontSize: 13,
-                        ),
+                        style:
+                            Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.copyWith(
+                                  color:
+                                      Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium
+                                          ?.color
+                                          ?.withOpacity(
+                                            0.7,
+                                          ) ??
+                                      Colors.black54,
+                                  fontSize: 13,
+                                ) ??
+                            const TextStyle(
+                              color: Colors.black54,
+                              fontSize: 13,
+                            ),
                       ),
                       const SizedBox(height: 4),
-                      const Text(
+                      Text(
                         "Single",
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
-                        ),
+                        style:
+                            Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  color: Theme.of(
+                                    context,
+                                  ).hintColor,
+                                  fontSize: 12,
+                                ) ??
+                            const TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
                       ),
                     ],
                   ),

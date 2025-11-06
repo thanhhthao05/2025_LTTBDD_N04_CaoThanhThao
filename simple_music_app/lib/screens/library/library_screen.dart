@@ -150,22 +150,33 @@ class _LibraryScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(
+        context,
+      ).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Theme.of(
+              context,
+            ).appBarTheme.backgroundColor ??
+            Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         title: Text(
           AppLocalizations.of(context).libraryTitle,
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+          style:
+              Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ) ??
+              const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.search,
-              color: Colors.black,
+              color: Theme.of(context).iconTheme.color,
             ),
             onPressed: () {
               Navigator.push(
@@ -194,16 +205,18 @@ class _LibraryScreenState
                 vertical: 6,
               ),
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: Theme.of(
+                  context,
+                ).colorScheme.secondaryContainer,
                 borderRadius: BorderRadius.circular(
                   20,
                 ),
               ),
               child: Text(
                 AppLocalizations.of(context).artists,
-                style: const TextStyle(
-                  color: Colors.black87,
-                ),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium,
               ),
             ),
             const SizedBox(height: 20),
@@ -213,9 +226,12 @@ class _LibraryScreenState
               mainAxisAlignment:
                   MainAxisAlignment.start,
               children: [
-                const Icon(
+                Icon(
                   Icons.swap_vert,
-                  color: Colors.black54,
+                  color:
+                      Theme.of(context).iconTheme.color
+                          ?.withOpacity(0.7) ??
+                      Colors.black54,
                   size: 20,
                 ),
                 const SizedBox(width: 8),
@@ -223,9 +239,21 @@ class _LibraryScreenState
                   AppLocalizations.of(
                     context,
                   ).searchHistory,
-                  style: const TextStyle(
-                    color: Colors.black54,
-                  ),
+                  style:
+                      Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(
+                        color:
+                            Theme.of(context)
+                                .textTheme
+                                .bodyMedium
+                                ?.color
+                                ?.withOpacity(0.7) ??
+                            Colors.black54,
+                      ) ??
+                      const TextStyle(
+                        color: Colors.black54,
+                      ),
                 ),
               ],
             ),
@@ -273,11 +301,17 @@ class _LibraryScreenState
       ),
       title: Text(
         item['name']!,
-        style: const TextStyle(color: Colors.black),
+        style: Theme.of(context).textTheme.bodyLarge,
       ),
       subtitle: Text(
         item['type']!,
-        style: const TextStyle(color: Colors.black54),
+        style:
+            Theme.of(
+              context,
+            ).textTheme.bodySmall?.copyWith(
+              color: Theme.of(context).hintColor,
+            ) ??
+            const TextStyle(color: Colors.black54),
       ),
       onTap: () {
         if (item['type'] == 'Nghệ sĩ' &&
@@ -304,13 +338,18 @@ class _LibraryScreenState
     VoidCallback onTap,
   ) {
     return ListTile(
-      leading: const CircleAvatar(
-        backgroundColor: Colors.black12,
-        child: Icon(Icons.add, color: Colors.black),
+      leading: CircleAvatar(
+        backgroundColor: Theme.of(
+          context,
+        ).colorScheme.surfaceVariant,
+        child: Icon(
+          Icons.add,
+          color: Theme.of(context).iconTheme.color,
+        ),
       ),
       title: Text(
         title,
-        style: const TextStyle(color: Colors.black),
+        style: Theme.of(context).textTheme.bodyLarge,
       ),
       onTap: onTap,
     );

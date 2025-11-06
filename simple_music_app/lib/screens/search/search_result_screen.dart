@@ -18,18 +18,34 @@ class SearchResultScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Theme.of(
+              context,
+            ).appBarTheme.backgroundColor ??
+            Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
-        iconTheme: const IconThemeData(
-          color: Colors.black,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).iconTheme.color,
         ),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(
+        context,
+      ).scaffoldBackgroundColor,
       body: songs.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
                 "Không có bài hát nào 😢",
-                style: TextStyle(color: Colors.grey),
+                style:
+                    Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(
+                        context,
+                      ).hintColor,
+                    ) ??
+                    const TextStyle(
+                      color: Colors.grey,
+                    ),
               ),
             )
           : ListView.builder(

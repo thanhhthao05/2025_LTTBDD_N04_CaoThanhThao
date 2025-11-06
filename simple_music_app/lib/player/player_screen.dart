@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:share_plus/share_plus.dart';
 import '../screens/account/favorite_manager.dart';
 import '../screens/song_options_menu.dart';
 import 'dart:async';

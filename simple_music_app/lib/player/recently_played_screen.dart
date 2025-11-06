@@ -194,18 +194,22 @@ class _RecentlyPlayedScreenState
         });
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(
+        context,
+      ).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Theme.of(
+              context,
+            ).appBarTheme.backgroundColor ??
+            Theme.of(context).scaffoldBackgroundColor,
         title: Text(
           AppLocalizations.of(context).recentlyPlayed,
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(context).textTheme.titleLarge
+              ?.copyWith(fontWeight: FontWeight.bold),
         ),
-        iconTheme: const IconThemeData(
-          color: Colors.black,
+        iconTheme: IconThemeData(
+          color: Theme.of(context).iconTheme.color,
         ),
         centerTitle: true,
         actions: [
@@ -230,11 +234,17 @@ class _RecentlyPlayedScreenState
             children: [
               Text(
                 formatDate(context, date),
-                style: const TextStyle(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
+                style:
+                    Theme.of(
+                      context,
+                    ).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ) ??
+                    const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
               ),
               const SizedBox(height: 10),
               ...songs.map((song) {
@@ -243,7 +253,7 @@ class _RecentlyPlayedScreenState
                     bottom: 12,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: Theme.of(context).cardColor,
                     borderRadius:
                         BorderRadius.circular(12),
                   ),
@@ -260,17 +270,41 @@ class _RecentlyPlayedScreenState
                     ),
                     title: Text(
                       song.title,
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
-                      ),
+                      style:
+                          Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
+                                fontWeight:
+                                    FontWeight.w600,
+                                fontSize: 15,
+                              ) ??
+                          const TextStyle(
+                            fontWeight:
+                                FontWeight.w600,
+                            fontSize: 15,
+                          ),
                     ),
                     subtitle: Text(
                       song.artist,
-                      style: const TextStyle(
-                        color: Colors.black54,
-                      ),
+                      style:
+                          Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                color:
+                                    Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.color
+                                        ?.withOpacity(
+                                          0.7,
+                                        ) ??
+                                    Colors.black54,
+                              ) ??
+                          const TextStyle(
+                            color: Colors.black54,
+                          ),
                     ),
                     trailing: const Icon(
                       Icons.play_circle_fill,

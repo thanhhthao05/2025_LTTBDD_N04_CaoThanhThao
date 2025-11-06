@@ -7,11 +7,11 @@ import '../../player/song_model.dart';
 class FavoriteManager {
   static const String _key = 'favorite_songs';
 
-  /// Danh sách bài hát yêu thích (ValueNotifier để UI cập nhật realtime)
+  // Danh sách bài hát yêu thích
   static final ValueNotifier<List<SongModel>>
   favoriteSongs = ValueNotifier<List<SongModel>>([]);
 
-  // 🔵 Khởi tạo danh sách bài hát yêu thích từ SharedPreferences
+  //🟢 Khởi tạo danh sách bài hát yêu thích từ SharedPreferences
   static Future<void> init() async {
     final prefs =
         await SharedPreferences.getInstance();
@@ -30,7 +30,7 @@ class FavoriteManager {
     }
   }
 
-  /// 🟢 Lưu danh sách bài hát yêu thích
+  //🟢 Lưu danh sách bài hát yêu thích vào SharedPreferences
   static Future<void> _save() async {
     final prefs =
         await SharedPreferences.getInstance();
@@ -46,7 +46,7 @@ class FavoriteManager {
     await prefs.setString(_key, jsonEncode(data));
   }
 
-  /// ❤️ Thêm hoặc xóa khỏi yêu thích
+  // ❤️ Thêm hoặc xóa khỏi yêu thích
   static Future<void> toggleFavorite(
     SongModel song,
   ) async {
@@ -66,7 +66,7 @@ class FavoriteManager {
     await _save();
   }
 
-  /// ✅ Kiểm tra xem bài hát có nằm trong yêu thích không
+  // Kiểm tra bài hát có trong yêu thích không
   static bool isFavorite(SongModel song) {
     return favoriteSongs.value.any(
       (s) => s.title == song.title,

@@ -96,29 +96,40 @@ class _ArtistDetailScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(
+        context,
+      ).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Theme.of(
+              context,
+            ).appBarTheme.backgroundColor ??
+            Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         title: Text(
           widget.artistName,
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+          style:
+              Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ) ??
+              const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
         ),
         leading: IconButton(
-          icon: const Icon(
+          icon: Icon(
             Icons.arrow_back,
-            color: Colors.black,
+            color: Theme.of(context).iconTheme.color,
           ),
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.add,
-              color: Colors.black,
+              color: Theme.of(context).iconTheme.color,
             ),
             onPressed: _addNewSong,
           ),
@@ -212,20 +223,47 @@ class _ArtistDetailScreenState
                   ),
                   title: Text(
                     song['title']!,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
+                    style:
+                        Theme.of(context)
+                            .textTheme
+                            .titleMedium
+                            ?.copyWith(
+                              fontWeight:
+                                  FontWeight.bold,
+                            ) ??
+                        const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
                   ),
                   subtitle: Text(
                     widget.artistName,
-                    style: const TextStyle(
-                      color: Colors.black54,
-                    ),
+                    style:
+                        Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.copyWith(
+                              color:
+                                  Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color
+                                      ?.withOpacity(
+                                        0.7,
+                                      ) ??
+                                  Colors.black54,
+                            ) ??
+                        const TextStyle(
+                          color: Colors.black54,
+                        ),
                   ),
-                  trailing: const Icon(
+                  trailing: Icon(
                     Icons.more_vert,
-                    color: Colors.black54,
+                    color:
+                        Theme.of(context)
+                            .iconTheme
+                            .color
+                            ?.withOpacity(0.65) ??
+                        Colors.black54,
                   ),
                   onTap: () {
                     Navigator.push(

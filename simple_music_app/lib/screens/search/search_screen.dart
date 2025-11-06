@@ -38,17 +38,25 @@ class _SearchScreenState extends State<SearchScreen> {
         .toList();
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(
+        context,
+      ).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Theme.of(
+              context,
+            ).appBarTheme.backgroundColor ??
+            Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         automaticallyImplyLeading: false,
         title: Row(
           children: [
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.arrow_back,
-                color: Colors.black,
+                color: Theme.of(
+                  context,
+                ).iconTheme.color,
               ),
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
@@ -126,7 +134,9 @@ class _SearchScreenState extends State<SearchScreen> {
 
                   return ActionChip(
                     label: Text(label),
-                    backgroundColor: Colors.grey[200],
+                    backgroundColor: Theme.of(
+                      context,
+                    ).cardColor,
                     onPressed: () {
                       List<Map<String, String>>
                       selectedSongs = [];
@@ -201,9 +211,18 @@ class _SearchScreenState extends State<SearchScreen> {
                       AppLocalizations.of(
                         context,
                       ).noResults,
-                      style: const TextStyle(
-                        color: Colors.grey,
-                      ),
+                      style:
+                          Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).hintColor,
+                              ) ??
+                          const TextStyle(
+                            color: Colors.grey,
+                          ),
                     ),
                   ),
                 )

@@ -1,6 +1,3 @@
-// Minimal fallback AppLocalizations shim to satisfy imports until `flutter gen-l10n` is run.
-// This file is intentionally small and returns a few keys used by the app.
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -24,7 +21,7 @@ class AppLocalizations {
   static const LocalizationsDelegate<AppLocalizations>
   delegate = _AppLocalizationsDelegate();
 
-  // Provide a small set of keys used across the app. Add more as needed.
+  // Chuỗi chung
   String get appTitle => locale.languageCode == 'en'
       ? 'Simple Music App'
       : 'Simple Music App';
@@ -74,7 +71,7 @@ class AppLocalizations {
       ? 'Logout'
       : 'Đăng xuất';
 
-  // Settings specific
+  // Đã thêm khóa cho AccountScreen
   String get videoPodcasts =>
       locale.languageCode == 'en'
       ? 'Video Podcasts'
@@ -121,7 +118,7 @@ class AppLocalizations {
       ? 'Tiếng Việt'
       : 'Tiếng Việt';
 
-  // Keys added for HomeScreen
+  // Các chuỗi khác trong ứng dụng
   String get suggestedSongs =>
       locale.languageCode == 'en'
       ? 'Suggested songs'
@@ -267,7 +264,8 @@ class _AppLocalizationsDelegate
 
   @override
   Future<AppLocalizations> load(Locale locale) {
-    // SynchronousFuture avoids async gap and is OK for this small shim.
+    // Trả về SynchronousFuture ở đây vì async
+    // SynchronousFuture tránh được khoảng cách async và phù hợp với shim nhỏ này.
     return SynchronousFuture<AppLocalizations>(
       AppLocalizations(locale),
     );

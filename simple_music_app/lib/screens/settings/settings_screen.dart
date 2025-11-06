@@ -252,11 +252,15 @@ class _SettingsScreenState
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.07),
+            color:
+                Theme.of(context).brightness ==
+                    Brightness.light
+                ? Colors.black.withOpacity(0.07)
+                : Colors.black.withOpacity(0.12),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -264,12 +268,17 @@ class _SettingsScreenState
       ),
       child: Row(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 30,
-            backgroundColor: Color(0xfff0f0f0),
+            backgroundColor: Theme.of(
+              context,
+            ).colorScheme.surfaceVariant,
             child: Icon(
               Icons.person,
-              color: Colors.black54,
+              color:
+                  Theme.of(context).iconTheme.color
+                      ?.withOpacity(0.7) ??
+                  Colors.black54,
               size: 35,
             ),
           ),
@@ -288,9 +297,17 @@ class _SettingsScreenState
               const SizedBox(height: 4),
               Text(
                 AppLocalizations.of(context).freeUser,
-                style: const TextStyle(
-                  color: Colors.grey,
-                ),
+                style:
+                    Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(
+                      color: Theme.of(
+                        context,
+                      ).hintColor,
+                    ) ??
+                    const TextStyle(
+                      color: Colors.grey,
+                    ),
               ),
             ],
           ),
@@ -306,11 +323,16 @@ class _SettingsScreenState
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w700,
-          color: Colors.black87,
-        ),
+        style:
+            Theme.of(
+              context,
+            ).textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+            ) ??
+            const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+            ),
       ),
     );
   }
@@ -326,11 +348,15 @@ class _SettingsScreenState
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color:
+                Theme.of(context).brightness ==
+                    Brightness.light
+                ? Colors.black.withOpacity(0.05)
+                : Colors.black.withOpacity(0.12),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -342,22 +368,38 @@ class _SettingsScreenState
           vertical: 2,
         ),
         secondary: CircleAvatar(
-          backgroundColor: Colors.grey.shade100,
+          backgroundColor: Theme.of(
+            context,
+          ).colorScheme.surfaceVariant,
           child: Icon(
             icon,
-            color: Colors.black87,
+            color: Theme.of(
+              context,
+            ).iconTheme.color?.withOpacity(0.8),
             size: 22,
           ),
         ),
         title: Text(
           title,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-          ),
+          style:
+              Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ) ??
+              const TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
         ),
         subtitle: Text(
           subtitle,
-          style: const TextStyle(color: Colors.grey),
+          style:
+              Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).hintColor,
+              ) ??
+              const TextStyle(color: Colors.grey),
         ),
         value: value,
         onChanged: onChanged,
@@ -381,11 +423,15 @@ class _SettingsScreenState
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 4),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color:
+                Theme.of(context).brightness ==
+                    Brightness.light
+                ? Colors.black.withOpacity(0.05)
+                : Colors.black.withOpacity(0.12),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
@@ -397,27 +443,47 @@ class _SettingsScreenState
           vertical: 2,
         ),
         leading: CircleAvatar(
-          backgroundColor: Colors.grey.shade100,
+          backgroundColor: Theme.of(
+            context,
+          ).colorScheme.surfaceVariant,
           child: Icon(
             icon,
-            color: Colors.black87,
+            color: Theme.of(
+              context,
+            ).iconTheme.color?.withOpacity(0.8),
             size: 22,
           ),
         ),
         title: Text(
           title,
-          style: const TextStyle(
-            fontWeight: FontWeight.w600,
-          ),
+          style:
+              Theme.of(
+                context,
+              ).textTheme.bodyLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ) ??
+              const TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
         ),
         subtitle: Text(
           subtitle,
-          style: const TextStyle(color: Colors.grey),
+          style:
+              Theme.of(
+                context,
+              ).textTheme.bodySmall?.copyWith(
+                color: Theme.of(context).hintColor,
+              ) ??
+              const TextStyle(color: Colors.grey),
         ),
-        trailing: const Icon(
+        trailing: Icon(
           Icons.arrow_forward_ios,
           size: 16,
-          color: Colors.grey,
+          color:
+              Theme.of(
+                context,
+              ).iconTheme.color?.withOpacity(0.7) ??
+              Colors.grey,
         ),
         onTap: onTap,
       ),

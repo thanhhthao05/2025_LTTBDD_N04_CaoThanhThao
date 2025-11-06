@@ -45,8 +45,7 @@ class _AccountScreenState
     Map<String, dynamic> userData,
   ) {
     final loc = AppLocalizations.of(context);
-    // Playlist defaults are created dynamically below (so no static list needed here).
-
+    // Danh sách playlist được gợi ý
     final List<Map<String, String>> suggested = [
       {
         'title': 'Tràn Bộ Nhớ',
@@ -61,22 +60,33 @@ class _AccountScreenState
     ];
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(
+        context,
+      ).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Theme.of(
+              context,
+            ).appBarTheme.backgroundColor ??
+            Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         title: Text(
           AppLocalizations.of(context).accountTitle,
-          style: const TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+          style:
+              Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+              ) ??
+              const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
         ),
         actions: [
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.notifications_none,
-              color: Colors.black,
+              color: Theme.of(context).iconTheme.color,
             ),
             onPressed: () {
               // 👉 Chuyển sang màn hình What's New
@@ -91,9 +101,9 @@ class _AccountScreenState
           ),
           const SizedBox(width: 10),
           IconButton(
-            icon: const Icon(
+            icon: Icon(
               Icons.settings_outlined,
-              color: Colors.black,
+              color: Theme.of(context).iconTheme.color,
             ),
             onPressed: () {
               // 👉 Chuyển sang màn hình Settings
@@ -123,23 +133,35 @@ class _AccountScreenState
             // Thông tin người dùng
             Row(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 35,
-                  backgroundColor: Color(0xFFD9C6FF),
+                  backgroundColor: Theme.of(
+                    context,
+                  ).colorScheme.primaryContainer,
                   child: Icon(
                     Icons
                         .person, // 👤 Biểu tượng mặc định
-                    color: Colors.white,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onPrimaryContainer,
                     size: 40,
                   ),
                 ),
                 const SizedBox(width: 15),
                 Text(
                   "${loc.greeting}, ${userData['name']}",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style:
+                      Theme.of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(
+                            fontWeight:
+                                FontWeight.w600,
+                          ) ??
+                      const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
               ],
             ),
@@ -149,10 +171,16 @@ class _AccountScreenState
               AppLocalizations.of(
                 context,
               ).yourPlaylists,
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-              ),
+              style:
+                  Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ) ??
+                  const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 10),
 
@@ -178,16 +206,30 @@ class _AccountScreenState
                     return ListTile(
                       leading: Icon(
                         p['icon'] as IconData,
-                        color: Colors.black87,
+                        color: Theme.of(context)
+                            .iconTheme
+                            .color
+                            ?.withOpacity(0.95),
                       ),
                       title: Text(
                         p['title'] as String,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodyLarge,
                       ),
                       subtitle:
                           p['title'] ==
                               loc.favoriteMusic
                           ? Text(
-                              "${p['songs']} bài hát",
+                              "${p['songs']} ${AppLocalizations.of(context).songsTab}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(
+                                    color: Theme.of(
+                                      context,
+                                    ).hintColor,
+                                  ),
                             )
                           : null,
                       dense: true,
@@ -220,9 +262,9 @@ class _AccountScreenState
             ),
 
             const SizedBox(height: 10),
-            const Divider(
+            Divider(
               thickness: 1,
-              color: Colors.black12,
+              color: Theme.of(context).dividerColor,
             ),
             const SizedBox(height: 10),
 
@@ -230,10 +272,16 @@ class _AccountScreenState
               AppLocalizations.of(
                 context,
               ).suggestedPlaylists,
-              style: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.bold,
-              ),
+              style:
+                  Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ) ??
+                  const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
             const SizedBox(height: 10),
 

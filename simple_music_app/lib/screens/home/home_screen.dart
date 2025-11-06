@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 import './notifications/whats_new_screen.dart';
 import '../../player/recently_played_screen.dart';
-// import '../../player/song_model.dart'; // unused here
 import '../../player/player_screen.dart';
 import '../song_options_menu.dart';
 import '../../player/all_songs.dart';
@@ -26,14 +25,20 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(
+        context,
+      ).scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor:
+            Theme.of(
+              context,
+            ).appBarTheme.backgroundColor ??
+            Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         title: Text(
           AppLocalizations.of(context).homeTitle,
           style: const TextStyle(
-            color: Colors.black,
+            // color will follow theme's text style
             fontSize: 22,
             fontWeight: FontWeight.bold,
           ),
@@ -42,7 +47,7 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(
             icon: const Icon(
               Icons.notifications_none,
-              color: Colors.black,
+              // color will follow theme
             ),
             onPressed: () {
               Navigator.push(
@@ -72,16 +77,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     ).musicLabel,
                   ),
                   selected: true,
-                  backgroundColor: Colors.white,
+                  backgroundColor: Theme.of(
+                    context,
+                  ).cardColor,
                   selectedColor: const Color.fromARGB(
                     255,
                     253,
                     119,
                     177,
                   ).withOpacity(0.1),
-                  labelStyle: const TextStyle(
-                    color: Colors.black,
-                  ),
+                  labelStyle: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium,
                   onSelected: (_) {},
                 ),
                 const SizedBox(width: 8),
