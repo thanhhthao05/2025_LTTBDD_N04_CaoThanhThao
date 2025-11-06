@@ -11,7 +11,7 @@ class FavoriteManager {
   static final ValueNotifier<List<SongModel>>
   favoriteSongs = ValueNotifier<List<SongModel>>([]);
 
-  //🟢 Khởi tạo danh sách bài hát yêu thích từ SharedPreferences
+  // 🟢 Khởi tạo danh sách yêu thích
   static Future<void> init() async {
     final prefs =
         await SharedPreferences.getInstance();
@@ -21,7 +21,7 @@ class FavoriteManager {
       favoriteSongs.value = decoded
           .map(
             (e) => SongModel(
-              title: e['title'],
+              title: e['title'] ?? '',
               artist: e['artist'] ?? '',
               image: e['image'] ?? '',
             ),
@@ -30,7 +30,7 @@ class FavoriteManager {
     }
   }
 
-  //🟢 Lưu danh sách bài hát yêu thích vào SharedPreferences
+  // 💾 Lưu danh sách yêu thích
   static Future<void> _save() async {
     final prefs =
         await SharedPreferences.getInstance();
@@ -46,30 +46,49 @@ class FavoriteManager {
     await prefs.setString(_key, jsonEncode(data));
   }
 
-  // ❤️ Thêm hoặc xóa khỏi yêu thích
-  static Future<void> toggleFavorite(
+  // 💖 Thêm bài hát vào danh sách yêu thích
+  static Future<void> addFavorite(
     SongModel song,
   ) async {
-    final exists = favoriteSongs.value.any(
+    if (!favoriteSongs.value.any(
       (s) => s.title == song.title,
-    );
-    if (exists) {
-      favoriteSongs.value = favoriteSongs.value
-          .where((s) => s.title != song.title)
-          .toList();
-    } else {
+    )) {
       favoriteSongs.value = [
         ...favoriteSongs.value,
         song,
       ];
+      await _save();
     }
+  }
+
+  // 💔 Xóa bài hát khỏi danh sách yêu thích
+  static Future<void> removeFavorite(
+    SongModel song,
+  ) async {
+    favoriteSongs.value = favoriteSongs.value
+        .where((s) => s.title != song.title)
+        .toList();
     await _save();
   }
 
-  // Kiểm tra bài hát có trong yêu thích không
+  // 🔁 Thêm hoặc xóa (toggle)
+  static Future<void> toggleFavorite(
+    SongModel song,
+  ) async {
+    if (await isFavorite(song)) {
+      await removeFavorite(song);
+    } else {
+      await addFavorite(song);
+    }
+  }
+
+  // 🔍 Kiểm tra bài hát có được yêu thích không
   static bool isFavorite(SongModel song) {
     return favoriteSongs.value.any(
-      (s) => s.title == song.title,
+      (s) =>
+          s.title == song.title &&
+          s.artist == song.artist &&
+          s.image == song.image,
     );
   }
 }

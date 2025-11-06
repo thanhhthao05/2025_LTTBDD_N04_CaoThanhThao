@@ -5,6 +5,7 @@ import '../../player/recently_played_screen.dart';
 import '../../player/player_screen.dart';
 import '../song_options_menu.dart';
 import '../../player/all_songs.dart';
+import 'notifications/albums_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -475,7 +476,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           MaterialPageRoute(
                             builder: (context) =>
                                 PlayerScreen(
-                                  songs: ngheGanDay,
+                                  songs: hot,
                                   currentIndex: index,
                                 ),
                           ),
@@ -515,13 +516,32 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 25),
 
             // 📊 Chill
-            Text(
-              AppLocalizations.of(context).chill,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const AlbumsScreen(),
+                  ),
+                );
+              },
+              child: Row(
+                mainAxisAlignment:
+                    MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    AppLocalizations.of(context).chill,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const Icon(Icons.chevron_right),
+                ],
               ),
             ),
+
             const SizedBox(height: 10),
 
             SizedBox(

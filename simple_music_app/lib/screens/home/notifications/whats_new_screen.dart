@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../player/player_screen.dart';
 import '../../../player/song_model.dart';
 import '../../account/favorite_manager.dart';
+import 'albums_screen.dart';
 
 class WhatsNewScreen extends StatefulWidget {
   const WhatsNewScreen({super.key});
@@ -15,6 +16,8 @@ class WhatsNewScreen extends StatefulWidget {
 
 class _WhatsNewScreenState
     extends State<WhatsNewScreen> {
+  int _selectedTab = 0; // 0 = Songs, 1 = Albums
+
   @override
   Widget build(BuildContext context) {
     final List<Map<String, dynamic>> allSongs = [
@@ -84,7 +87,7 @@ class _WhatsNewScreenState
       ).scaffoldBackgroundColor,
       body: Column(
         children: [
-          // 🟢 PHẦN TIÊU ĐỀ
+          // 🟢 HEADER
           Container(
             width: double.infinity,
             padding: const EdgeInsets.only(
@@ -144,18 +147,38 @@ class _WhatsNewScreenState
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    _buildTab(
-                      AppLocalizations.of(
-                        context,
-                      ).songsTab,
-                      true,
+                    // Tab "Songs"
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedTab = 0;
+                        });
+                      },
+                      child: _buildTab(
+                        AppLocalizations.of(
+                          context,
+                        ).songsTab,
+                        _selectedTab == 0,
+                      ),
                     ),
                     const SizedBox(width: 25),
-                    _buildTab(
-                      AppLocalizations.of(
-                        context,
-                      ).albumTab,
-                      false,
+                    // Tab "Albums" -> chuyển sang AlbumsScreen
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) =>
+                                const AlbumsScreen(),
+                          ),
+                        );
+                      },
+                      child: _buildTab(
+                        AppLocalizations.of(
+                          context,
+                        ).albumTab,
+                        false,
+                      ),
                     ),
                   ],
                 ),
@@ -352,7 +375,7 @@ class _WhatsNewScreenState
     );
   }
 
-  // 🟣 Card bài hát (đã thêm tim)
+  // 🟣 Card bài hát (có icon tim)
   Widget _buildMusicCard({
     required BuildContext context,
     required String image,
@@ -370,30 +393,26 @@ class _WhatsNewScreenState
     return ValueListenableBuilder(
       valueListenable: FavoriteManager.favoriteSongs,
       builder: (context, favorites, _) {
-        final isFavorite = FavoriteManager.isFavorite(
-          songModel,
+        final isFavorite = favorites.any(
+          (s) => s.title == songModel.title,
         );
 
         return InkWell(
           borderRadius: BorderRadius.circular(10),
           onTap: () {
-            // 🔹 Tạo danh sách toàn bộ bài hát dưới dạng Map
-            final songsList = allSongs
-                .map(
-                  (s) => {
-                    'title': s['title'] as String,
-                    'artist': s['artist'] as String,
-                    'img': s['image'] as String,
-                  },
-                )
-                .toList();
+            final List<Map<String, String>> songsList =
+                allSongs.map((s) {
+                  return {
+                    'title': s['title'].toString(),
+                    'artist': s['artist'].toString(),
+                    'img': s['image'].toString(),
+                  };
+                }).toList();
 
-            // 🔹 Xác định vị trí bài hát hiện tại trong danh sách
             final currentIndex = songsList.indexWhere(
               (s) => s['title'] == title,
             );
 
-            // 🔹 Mở PlayerScreen với danh sách và vị trí hiện tại
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -404,7 +423,6 @@ class _WhatsNewScreenState
               ),
             );
           },
-
           child: Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -536,7 +554,6 @@ class _WhatsNewScreenState
                     FavoriteManager.toggleFavorite(
                       songModel,
                     );
-
                     ScaffoldMessenger.of(
                       context,
                     ).showSnackBar(

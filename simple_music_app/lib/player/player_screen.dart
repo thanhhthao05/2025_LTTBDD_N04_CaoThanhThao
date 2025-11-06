@@ -47,14 +47,17 @@ class _PlayerScreenState extends State<PlayerScreen>
     )..repeat();
 
     startTimer();
+    _checkFavorite();
+  }
 
-    // Kiểm tra trạng thái yêu thích ban đầu
+  Future<void> _checkFavorite() async {
     final song = SongModel(
       title: currentSong['title'] ?? '',
       artist: currentSong['artist'] ?? '',
       image: currentSong['img'] ?? '',
     );
-    isFavorite = FavoriteManager.isFavorite(song);
+    final fav = await FavoriteManager.isFavorite(song);
+    setState(() => isFavorite = fav);
   }
 
   void startTimer() {
@@ -85,6 +88,7 @@ class _PlayerScreenState extends State<PlayerScreen>
       isPlaying = true;
       _rotationController.repeat();
     });
+    _checkFavorite();
   }
 
   void previousSong() {
@@ -96,6 +100,7 @@ class _PlayerScreenState extends State<PlayerScreen>
       isPlaying = true;
       _rotationController.repeat();
     });
+    _checkFavorite();
   }
 
   @override
@@ -311,16 +316,44 @@ class _PlayerScreenState extends State<PlayerScreen>
                                     currentSong['img'] ??
                                     '',
                               );
-                              await FavoriteManager.toggleFavorite(
+
+                              // Nếu bài đang là yêu thích → xóa
+                              if (await FavoriteManager.isFavorite(
                                 s,
-                              );
-                              final fav =
-                                  await FavoriteManager.isFavorite(
-                                    s,
-                                  );
-                              setState(
-                                () => isFavorite = fav,
-                              );
+                              )) {
+                                await FavoriteManager.removeFavorite(
+                                  s,
+                                );
+                                setState(() {
+                                  isFavorite = false;
+                                });
+                                ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Đã xóa khỏi danh sách yêu thích ❤️',
+                                    ),
+                                  ),
+                                );
+                              } else {
+                                // Nếu chưa có → thêm
+                                await FavoriteManager.addFavorite(
+                                  s,
+                                );
+                                setState(() {
+                                  isFavorite = true;
+                                });
+                                ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Đã thêm vào danh sách yêu thích ❤️',
+                                    ),
+                                  ),
+                                );
+                              }
                             },
                           ),
                         ],
