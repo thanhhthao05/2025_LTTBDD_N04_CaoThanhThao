@@ -5,6 +5,7 @@ import '../screens/account/favorite_manager.dart';
 import '../screens/song_options_menu.dart';
 import 'dart:async';
 import 'dart:ui';
+import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 import 'share_song.dart';
 import 'song_model.dart';
 
@@ -153,9 +154,11 @@ class _PlayerScreenState extends State<PlayerScreen>
                         onPressed: () =>
                             Navigator.pop(context),
                       ),
-                      const Text(
-                        "Đang phát",
-                        style: TextStyle(
+                      Text(
+                        AppLocalizations.of(
+                          context,
+                        ).nowPlaying,
+                        style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
@@ -178,9 +181,11 @@ class _PlayerScreenState extends State<PlayerScreen>
                           ScaffoldMessenger.of(
                             context,
                           ).showSnackBar(
-                            const SnackBar(
+                            SnackBar(
                               content: Text(
-                                '🎧 Đang phát bài hát...',
+                                AppLocalizations.of(
+                                  context,
+                                ).playingSongSnackbar,
                               ),
                             ),
                           );
@@ -189,9 +194,11 @@ class _PlayerScreenState extends State<PlayerScreen>
                           ScaffoldMessenger.of(
                             context,
                           ).showSnackBar(
-                            const SnackBar(
+                            SnackBar(
                               content: Text(
-                                '➕ Đã thêm vào danh sách phát',
+                                AppLocalizations.of(
+                                  context,
+                                ).addedToPlaylistShort,
                               ),
                             ),
                           );
@@ -200,9 +207,11 @@ class _PlayerScreenState extends State<PlayerScreen>
                           ScaffoldMessenger.of(
                             context,
                           ).showSnackBar(
-                            const SnackBar(
+                            SnackBar(
                               content: Text(
-                                '🗑 Đã xóa khỏi danh sách phát',
+                                AppLocalizations.of(
+                                  context,
+                                ).removedFromPlaylist,
                               ),
                             ),
                           );

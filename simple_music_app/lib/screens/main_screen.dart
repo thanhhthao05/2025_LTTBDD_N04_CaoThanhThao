@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 import 'home/home_screen.dart';
 import 'search/search_screen.dart';
 import 'library/library_screen.dart';
@@ -57,22 +58,30 @@ class _MainScreenState extends State<MainScreen> {
         ),
         unselectedItemColor: Colors.grey,
         showUnselectedLabels: true,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: const Icon(Icons.home),
+            label: AppLocalizations.of(
+              context,
+            ).homeTitle,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
+            icon: const Icon(Icons.search),
+            label: AppLocalizations.of(
+              context,
+            ).searchTitle,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.library_music),
-            label: "Your Library",
+            icon: const Icon(Icons.library_music),
+            label: AppLocalizations.of(
+              context,
+            ).libraryTitle,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: "Account",
+            icon: const Icon(Icons.account_circle),
+            label: AppLocalizations.of(
+              context,
+            ).accountTitle,
           ),
         ],
       ),

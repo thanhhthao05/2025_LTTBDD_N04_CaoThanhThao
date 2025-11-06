@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
+import '../../models/app_settings.dart';
 import '../auth/auth_state.dart';
 import '../auth/login_screen.dart';
 
@@ -21,17 +24,23 @@ class _SettingsScreenState
   bool streamAudioOnly = false;
 
   // 🌙 Thêm biến cho chỉnh sáng & ngôn ngữ
-  bool darkMode = false;
-  String selectedLanguage = "Tiếng Việt";
+  // local copies removed - use AppSettings instead
 
   @override
   Widget build(BuildContext context) {
+    final appSettings = Provider.of<AppSettings>(
+      context,
+    );
+    final loc = AppLocalizations.of(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xfff7f7f7),
+      backgroundColor: appSettings.darkMode
+          ? Colors.black
+          : const Color(0xfff7f7f7),
       appBar: AppBar(
-        title: const Text(
-          "Cài đặt",
-          style: TextStyle(
+        title: Text(
+          loc.settingsTitle,
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w700,
             fontSize: 22,
@@ -39,10 +48,14 @@ class _SettingsScreenState
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.white,
+        backgroundColor: appSettings.darkMode
+            ? Colors.grey[900]
+            : Colors.white,
         elevation: 0.8,
-        iconTheme: const IconThemeData(
-          color: Colors.black,
+        iconTheme: IconThemeData(
+          color: appSettings.darkMode
+              ? Colors.white
+              : Colors.black,
         ),
       ),
       body: SingleChildScrollView(
@@ -59,12 +72,11 @@ class _SettingsScreenState
             const SizedBox(height: 25),
 
             // 📶 Data Saver Section
-            _buildSectionTitle("Tiết kiệm dữ liệu"),
+            _buildSectionTitle(loc.saveDataTitle),
             _buildSwitchTile(
               icon: Icons.data_saver_on_outlined,
-              title: "Save Data",
-              subtitle:
-                  "Giảm chất lượng âm thanh và ẩn hình ảnh trên canvas.",
+              title: loc.saveDataTitle,
+              subtitle: loc.saveDataSubtitle,
               value: saveData,
               onChanged: (val) =>
                   setState(() => saveData = val),
@@ -73,13 +85,12 @@ class _SettingsScreenState
             const SizedBox(height: 15),
 
             // 🎥 Video Podcasts Section
-            _buildSectionTitle("Video Podcasts"),
+            _buildSectionTitle(loc.videoPodcasts),
             _buildSwitchTile(
               icon:
                   Icons.download_for_offline_outlined,
-              title: "Chỉ tải âm thanh",
-              subtitle:
-                  "Chỉ lưu podcast video ở dạng âm thanh.",
+              title: loc.downloadAudioOnlyTitle,
+              subtitle: loc.downloadAudioOnlySubtitle,
               value: downloadAudioOnly,
               onChanged: (val) => setState(
                 () => downloadAudioOnly = val,
@@ -87,10 +98,8 @@ class _SettingsScreenState
             ),
             _buildSwitchTile(
               icon: Icons.wifi_off_outlined,
-              title:
-                  "Chỉ phát âm thanh khi không có Wi-Fi",
-              subtitle:
-                  "Phát podcast video dưới dạng âm thanh khi không có Wi-Fi.",
+              title: loc.streamAudioOnlyTitle,
+              subtitle: loc.streamAudioOnlySubtitle,
               value: streamAudioOnly,
               onChanged: (val) => setState(
                 () => streamAudioOnly = val,
@@ -100,25 +109,30 @@ class _SettingsScreenState
             const SizedBox(height: 15),
 
             // 💡 Brightness Section
-            _buildSectionTitle("Chỉnh sáng"),
+            _buildSectionTitle(loc.darkModeTitle),
             _buildSwitchTile(
               icon: Icons.dark_mode_outlined,
-              title: "Chế độ tối",
-              subtitle: "Bật/tắt giao diện nền tối.",
-              value: darkMode,
+              title: loc.darkModeTitle,
+              subtitle: loc.darkModeSubtitle,
+              value: appSettings.darkMode,
               onChanged: (val) =>
-                  setState(() => darkMode = val),
+                  appSettings.setDarkMode(val),
             ),
 
             const SizedBox(height: 15),
 
             // 🌍 Language Section
-            _buildSectionTitle("Ngôn ngữ"),
+            _buildSectionTitle(loc.languageTitle),
             _buildSettingTile(
               icon: Icons.language_outlined,
-              title: "Ngôn ngữ hiển thị",
-              subtitle: selectedLanguage,
-              onTap: _showLanguageDialog,
+              title: loc.languageSettingTitle,
+              subtitle:
+                  appSettings.locale.languageCode ==
+                      'en'
+                  ? loc.englishLabel
+                  : loc.vietnameseLabel,
+              onTap: () =>
+                  _showLanguageDialog(appSettings),
             ),
 
             const SizedBox(height: 30),
@@ -136,9 +150,9 @@ class _SettingsScreenState
                     209,
                   ),
                 ),
-                label: const Text(
-                  "Đăng xuất",
-                  style: TextStyle(
+                label: Text(
+                  loc.logout,
+                  style: const TextStyle(
                     color: Color.fromARGB(
                       255,
                       255,
@@ -191,9 +205,11 @@ class _SettingsScreenState
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
-            "Nâng cấp để có trải nghiệm tốt nhất",
-            style: TextStyle(
+          Text(
+            AppLocalizations.of(
+              context,
+            ).premiumUpgradePrompt,
+            style: const TextStyle(
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.w600,
@@ -216,9 +232,11 @@ class _SettingsScreenState
               foregroundColor: Colors.black,
               elevation: 0,
             ),
-            child: const Text(
-              "Nâng cấp Premium",
-              style: TextStyle(
+            child: Text(
+              AppLocalizations.of(
+                context,
+              ).upgradePremiumButton,
+              style: const TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 15,
               ),
@@ -268,9 +286,11 @@ class _SettingsScreenState
                 ),
               ),
               const SizedBox(height: 4),
-              const Text(
-                "Người dùng miễn phí",
-                style: TextStyle(color: Colors.grey),
+              Text(
+                AppLocalizations.of(context).freeUser,
+                style: const TextStyle(
+                  color: Colors.grey,
+                ),
               ),
             ],
           ),
@@ -405,31 +425,51 @@ class _SettingsScreenState
   }
 
   // 🌍 Chọn ngôn ngữ
-  void _showLanguageDialog() {
+  void _showLanguageDialog(AppSettings appSettings) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Chọn ngôn ngữ"),
+        title: Text(
+          AppLocalizations.of(context).chooseLanguage,
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildLanguageOption("Tiếng Việt"),
-            _buildLanguageOption("English"),
+            RadioListTile<String>(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                ).vietnameseLabel,
+              ),
+              value: 'vi',
+              groupValue:
+                  appSettings.locale.languageCode,
+              onChanged: (v) {
+                appSettings.setLocale(
+                  const Locale('vi'),
+                );
+                Navigator.pop(context);
+              },
+            ),
+            RadioListTile<String>(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                ).englishLabel,
+              ),
+              value: 'en',
+              groupValue:
+                  appSettings.locale.languageCode,
+              onChanged: (v) {
+                appSettings.setLocale(
+                  const Locale('en'),
+                );
+                Navigator.pop(context);
+              },
+            ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildLanguageOption(String language) {
-    return RadioListTile<String>(
-      title: Text(language),
-      value: language,
-      groupValue: selectedLanguage,
-      onChanged: (value) {
-        setState(() => selectedLanguage = value!);
-        Navigator.pop(context);
-      },
     );
   }
 

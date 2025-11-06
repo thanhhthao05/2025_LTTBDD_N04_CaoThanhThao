@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 import '../main_screen.dart';
 import '../../screens/song_options_menu.dart';
 import '../../player/player_screen.dart';
@@ -14,10 +15,11 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  // suggestion keys - map to localized labels below
   final List<String> suggestions = [
-    'nghe gần đây',
+    'recentlyPlayed',
     'hot',
-    'gợi ý bài hát',
+    'suggestedSongs',
   ];
   String searchQuery = '';
 
@@ -62,10 +64,11 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             Expanded(
               child: TextField(
-                decoration: const InputDecoration(
-                  hintText:
-                      'Tìm kiếm bài hát, nghệ sĩ...',
-                  hintStyle: TextStyle(
+                decoration: InputDecoration(
+                  hintText: AppLocalizations.of(
+                    context,
+                  ).searchHint,
+                  hintStyle: const TextStyle(
                     color: Colors.grey,
                   ),
                   border: InputBorder.none,
@@ -90,9 +93,11 @@ class _SearchScreenState extends State<SearchScreen> {
                 CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 8),
-              const Text(
-                'Đề xuất cho bạn',
-                style: TextStyle(
+              Text(
+                AppLocalizations.of(
+                  context,
+                ).suggestedSongs,
+                style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
@@ -104,14 +109,29 @@ class _SearchScreenState extends State<SearchScreen> {
                 spacing: 8,
                 runSpacing: 8,
                 children: suggestions.map((s) {
+                  String label;
+                  if (s == 'recentlyPlayed') {
+                    label = AppLocalizations.of(
+                      context,
+                    ).recentlyPlayed;
+                  } else if (s == 'hot') {
+                    label = AppLocalizations.of(
+                      context,
+                    ).hotToday;
+                  } else {
+                    label = AppLocalizations.of(
+                      context,
+                    ).suggestedSongs;
+                  }
+
                   return ActionChip(
-                    label: Text(s),
+                    label: Text(label),
                     backgroundColor: Colors.grey[200],
                     onPressed: () {
                       List<Map<String, String>>
                       selectedSongs = [];
 
-                      if (s == 'nghe gần đây') {
+                      if (s == 'recentlyPlayed') {
                         selectedSongs = ngheGanDay;
                       } else if (s == 'hot') {
                         selectedSongs = hot;
@@ -124,7 +144,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         MaterialPageRoute(
                           builder: (_) =>
                               SearchResultScreen(
-                                title: s,
+                                title: label,
                                 songs: selectedSongs,
                               ),
                         ),
@@ -142,9 +162,11 @@ class _SearchScreenState extends State<SearchScreen> {
                   mainAxisAlignment:
                       MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Tìm kiếm gần đây',
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(
+                        context,
+                      ).searchHistory,
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -155,9 +177,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           allSongs.clear();
                         });
                       },
-                      child: const Text(
-                        'XÓA',
-                        style: TextStyle(
+                      child: Text(
+                        AppLocalizations.of(
+                          context,
+                        ).clear,
+                        style: const TextStyle(
                           color: Colors.purple,
                           fontWeight: FontWeight.bold,
                         ),
@@ -170,12 +194,14 @@ class _SearchScreenState extends State<SearchScreen> {
 
               // 📝 Kết quả tìm kiếm
               if (filteredSongs.isEmpty)
-                const Center(
+                Center(
                   child: Padding(
-                    padding: EdgeInsets.all(30),
+                    padding: const EdgeInsets.all(30),
                     child: Text(
-                      "Không tìm thấy kết quả phù hợp 😢",
-                      style: TextStyle(
+                      AppLocalizations.of(
+                        context,
+                      ).noResults,
+                      style: const TextStyle(
                         color: Colors.grey,
                       ),
                     ),
@@ -246,7 +272,11 @@ class _SearchScreenState extends State<SearchScreen> {
                           ).showSnackBar(
                             SnackBar(
                               content: Text(
-                                "🎶 Đã thêm '${item['title']}' vào danh sách phát.",
+                                AppLocalizations.of(
+                                  context,
+                                ).addedToPlaylist(
+                                  item['title'] ?? '',
+                                ),
                               ),
                             ),
                           );

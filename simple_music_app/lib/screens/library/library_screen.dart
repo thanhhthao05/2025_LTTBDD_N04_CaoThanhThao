@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 import '../search/search_screen.dart';
 import 'artist_detail_screen.dart';
 
@@ -91,7 +92,9 @@ class _LibraryScreenState
         final imgController = TextEditingController();
 
         return AlertDialog(
-          title: const Text("Thêm nghệ sĩ mới"),
+          title: Text(
+            AppLocalizations.of(context).addArtist,
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -113,7 +116,9 @@ class _LibraryScreenState
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("Hủy"),
+              child: Text(
+                AppLocalizations.of(context).cancel,
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -132,7 +137,9 @@ class _LibraryScreenState
                   Navigator.pop(context);
                 }
               },
-              child: const Text("Thêm"),
+              child: Text(
+                AppLocalizations.of(context).add,
+              ),
             ),
           ],
         );
@@ -147,9 +154,9 @@ class _LibraryScreenState
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          "Thư viện của bạn",
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context).libraryTitle,
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
@@ -192,9 +199,9 @@ class _LibraryScreenState
                   20,
                 ),
               ),
-              child: const Text(
-                "Nghệ sĩ",
-                style: TextStyle(
+              child: Text(
+                AppLocalizations.of(context).artists,
+                style: const TextStyle(
                   color: Colors.black87,
                 ),
               ),
@@ -202,19 +209,21 @@ class _LibraryScreenState
             const SizedBox(height: 20),
 
             // 🔹 Tiêu đề "Tìm kiếm gần đây"
-            const Row(
+            Row(
               mainAxisAlignment:
                   MainAxisAlignment.start,
               children: [
-                Icon(
+                const Icon(
                   Icons.swap_vert,
                   color: Colors.black54,
                   size: 20,
                 ),
-                SizedBox(width: 8),
+                const SizedBox(width: 8),
                 Text(
-                  "Tìm kiếm gần đây",
-                  style: TextStyle(
+                  AppLocalizations.of(
+                    context,
+                  ).searchHistory,
+                  style: const TextStyle(
                     color: Colors.black54,
                   ),
                 ),
@@ -237,7 +246,9 @@ class _LibraryScreenState
                     );
                   } else {
                     return _buildAddItem(
-                      "Thêm nghệ sĩ",
+                      AppLocalizations.of(
+                        context,
+                      ).addArtist,
                       _addNewArtist,
                     );
                   }

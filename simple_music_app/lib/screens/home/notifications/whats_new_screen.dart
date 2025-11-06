@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
 import '../../../player/player_screen.dart';
 import '../../../player/song_model.dart';
@@ -115,9 +116,11 @@ class _WhatsNewScreenState
                       ),
                     ),
                     const SizedBox(width: 4),
-                    const Text(
-                      "Có gì mới",
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(
+                        context,
+                      ).whatsNew,
+                      style: const TextStyle(
                         color: Colors.black,
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -128,9 +131,19 @@ class _WhatsNewScreenState
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    _buildTab("Bài hát", true),
+                    _buildTab(
+                      AppLocalizations.of(
+                        context,
+                      ).songsTab,
+                      true,
+                    ),
                     const SizedBox(width: 25),
-                    _buildTab("Album", false),
+                    _buildTab(
+                      AppLocalizations.of(
+                        context,
+                      ).albumTab,
+                      false,
+                    ),
                   ],
                 ),
               ],
@@ -149,9 +162,11 @@ class _WhatsNewScreenState
                     CrossAxisAlignment.start,
                 children: [
                   if (todaySongs.isNotEmpty) ...[
-                    const Text(
-                      "Hôm nay",
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(
+                        context,
+                      ).today,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -179,9 +194,11 @@ class _WhatsNewScreenState
                     const SizedBox(height: 20),
                   ],
                   if (yesterdaySongs.isNotEmpty) ...[
-                    const Text(
-                      "Hôm qua",
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(
+                        context,
+                      ).yesterday,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -211,9 +228,11 @@ class _WhatsNewScreenState
                     const SizedBox(height: 20),
                   ],
                   if (earlierSongs.isNotEmpty) ...[
-                    const Text(
-                      "Trước đó",
-                      style: TextStyle(
+                    Text(
+                      AppLocalizations.of(
+                        context,
+                      ).earlier,
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),

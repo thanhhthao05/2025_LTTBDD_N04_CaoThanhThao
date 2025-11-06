@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 import '../auth/login_screen.dart';
 import '../auth/register_screen.dart';
 import '../auth/auth_state.dart';
@@ -43,17 +44,8 @@ class _AccountScreenState
     BuildContext context,
     Map<String, dynamic> userData,
   ) {
-    final List<Map<String, dynamic>> playlists = [
-      {
-        'icon': Icons.music_note,
-        'title': 'Nghe gần đây',
-      },
-      {
-        'icon': Icons.favorite,
-        'title': 'Nhạc yêu thích',
-        'songs': 24,
-      },
-    ];
+    final loc = AppLocalizations.of(context);
+    // Playlist defaults are created dynamically below (so no static list needed here).
 
     final List<Map<String, String>> suggested = [
       {
@@ -73,9 +65,9 @@ class _AccountScreenState
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          "Tài khoản của tôi",
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context).accountTitle,
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
@@ -143,7 +135,7 @@ class _AccountScreenState
                 ),
                 const SizedBox(width: 15),
                 Text(
-                  "Xin chào, ${userData['name']}",
+                  "${loc.greeting}, ${userData['name']}",
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
@@ -153,9 +145,11 @@ class _AccountScreenState
             ),
             const SizedBox(height: 25),
 
-            const Text(
-              "Playlist của bạn",
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(
+                context,
+              ).yourPlaylists,
+              style: const TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
               ),
@@ -170,11 +164,11 @@ class _AccountScreenState
                 final playlists = [
                   {
                     'icon': Icons.music_note,
-                    'title': 'Nghe gần đây',
+                    'title': loc.recentlyPlayed,
                   },
                   {
                     'icon': Icons.favorite,
-                    'title': 'Nhạc yêu thích',
+                    'title': loc.favoriteMusic,
                     'songs': favoriteSongs.length,
                   },
                 ];
@@ -191,7 +185,7 @@ class _AccountScreenState
                       ),
                       subtitle:
                           p['title'] ==
-                              'Nhạc yêu thích'
+                              loc.favoriteMusic
                           ? Text(
                               "${p['songs']} bài hát",
                             )
@@ -200,7 +194,7 @@ class _AccountScreenState
                       contentPadding: EdgeInsets.zero,
                       onTap: () {
                         if (p['title'] ==
-                            'Nghe gần đây') {
+                            loc.recentlyPlayed) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -209,7 +203,7 @@ class _AccountScreenState
                             ),
                           );
                         } else if (p['title'] ==
-                            'Nhạc yêu thích') {
+                            loc.favoriteMusic) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -232,9 +226,11 @@ class _AccountScreenState
             ),
             const SizedBox(height: 10),
 
-            const Text(
-              "Playlist được gợi ý",
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(
+                context,
+              ).suggestedPlaylists,
+              style: const TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.bold,
               ),
@@ -344,10 +340,12 @@ class _AccountScreenState
                 ),
               ),
               const SizedBox(height: 15),
-              const Text(
-                "Đăng nhập để lưu nhạc yêu thích\nvà tạo playlist cá nhân của bạn!",
+              Text(
+                AppLocalizations.of(
+                  context,
+                ).loginPrompt,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 15,
                   color: Colors.black87,
                   height: 1.5,
@@ -382,9 +380,11 @@ class _AccountScreenState
                             vertical: 12,
                           ),
                     ),
-                    child: const Text(
-                      "Đăng nhập",
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(
+                        context,
+                      ).loginButton,
+                      style: const TextStyle(
                         color: Colors.deepPurple,
                         fontWeight: FontWeight.bold,
                       ),
@@ -414,9 +414,11 @@ class _AccountScreenState
                             vertical: 12,
                           ),
                     ),
-                    child: const Text(
-                      "Đăng ký",
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(
+                        context,
+                      ).signupButton,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                       ),
@@ -436,21 +438,23 @@ class _AccountScreenState
                     15,
                   ),
                 ),
-                child: const Center(
+                child: Center(
                   child: Column(
                     mainAxisAlignment:
                         MainAxisAlignment.center,
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.lock_outline,
                         color: Colors.black45,
                         size: 40,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
-                        "Đăng nhập để lưu nhạc yêu thích\nvà tạo playlist cá nhân của bạn!",
+                        AppLocalizations.of(
+                          context,
+                        ).loginCardPrompt,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.black54,
                           fontSize: 14,
                         ),

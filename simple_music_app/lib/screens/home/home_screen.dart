@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 import './notifications/whats_new_screen.dart';
 import '../../player/recently_played_screen.dart';
-import '../../player/song_model.dart';
+// import '../../player/song_model.dart'; // unused here
 import '../../player/player_screen.dart';
 import '../song_options_menu.dart';
 import '../../player/all_songs.dart';
@@ -29,9 +30,9 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          'Xin chào',
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context).homeTitle,
+          style: const TextStyle(
             color: Colors.black,
             fontSize: 22,
             fontWeight: FontWeight.bold,
@@ -65,7 +66,11 @@ class _HomeScreenState extends State<HomeScreen> {
             Row(
               children: [
                 FilterChip(
-                  label: const Text("Âm nhạc"),
+                  label: Text(
+                    AppLocalizations.of(
+                      context,
+                    ).musicLabel,
+                  ),
                   selected: true,
                   backgroundColor: Colors.white,
                   selectedColor: const Color.fromARGB(
@@ -90,9 +95,11 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisAlignment:
                   MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  "Gợi ý bài hát",
-                  style: TextStyle(
+                Text(
+                  AppLocalizations.of(
+                    context,
+                  ).suggestedSongs,
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -121,9 +128,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           177,
                         ),
                       ),
-                      label: const Text(
-                        "Phát tất cả",
-                        style: TextStyle(
+                      label: Text(
+                        AppLocalizations.of(
+                          context,
+                        ).playAll,
+                        style: const TextStyle(
                           color: Color.fromARGB(
                             255,
                             253,
@@ -144,9 +153,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         ScaffoldMessenger.of(
                           context,
                         ).showSnackBar(
-                          const SnackBar(
+                          SnackBar(
                             content: Text(
-                              "✨ Danh sách gợi ý đã làm mới!",
+                              AppLocalizations.of(
+                                context,
+                              ).suggestionsRefreshed,
                             ),
                           ),
                         );
@@ -303,7 +314,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ).showSnackBar(
                                       SnackBar(
                                         content: Text(
-                                          "Đã thêm '${song['title']}' vào danh sách phát.",
+                                          AppLocalizations.of(
+                                            context,
+                                          ).addedToPlaylist(
+                                            song['title'] ??
+                                                '',
+                                          ),
                                         ),
                                       ),
                                     );
@@ -344,15 +360,17 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment:
                     MainAxisAlignment.spaceBetween,
-                children: const [
+                children: [
                   Text(
-                    "Nghe gần đây",
-                    style: TextStyle(
+                    AppLocalizations.of(
+                      context,
+                    ).recentlyPlayed,
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Icon(Icons.chevron_right),
+                  const Icon(Icons.chevron_right),
                 ],
               ),
             ),
@@ -424,9 +442,9 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 25),
 
             // 🎧 Hot nhất hôm nay
-            const Text(
-              "Hot nhất hôm nay",
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context).hotToday,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -490,9 +508,9 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 25),
 
             // 📊 Chill
-            const Text(
-              "Chill",
-              style: TextStyle(
+            Text(
+              AppLocalizations.of(context).chill,
+              style: const TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),

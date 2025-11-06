@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 import './song_model.dart';
 import './player_screen.dart';
 
@@ -92,7 +93,9 @@ class _RecentlyPlayedScreenState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Thêm bài hát mới"),
+        title: Text(
+          AppLocalizations.of(context).addNewSong,
+        ),
         content: SingleChildScrollView(
           child: Column(
             children: [
@@ -120,7 +123,9 @@ class _RecentlyPlayedScreenState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Hủy"),
+            child: Text(
+              AppLocalizations.of(context).cancel,
+            ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -139,14 +144,19 @@ class _RecentlyPlayedScreenState
                 Navigator.pop(context);
               }
             },
-            child: const Text("Lưu"),
+            child: Text(
+              AppLocalizations.of(context).add,
+            ),
           ),
         ],
       ),
     );
   }
 
-  String formatDate(String dateKey) {
+  String formatDate(
+    BuildContext context,
+    String dateKey,
+  ) {
     final now = DateTime.now();
     final parts = dateKey.split('/');
     if (parts.length != 3) return dateKey;
@@ -158,8 +168,10 @@ class _RecentlyPlayedScreenState
     );
     final diff = now.difference(date).inDays;
 
-    if (diff == 0) return "Hôm nay";
-    if (diff == 1) return "Hôm qua";
+    if (diff == 0)
+      return AppLocalizations.of(context).today;
+    if (diff == 1)
+      return AppLocalizations.of(context).yesterday;
     return dateKey;
   }
 
@@ -185,9 +197,9 @@ class _RecentlyPlayedScreenState
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text(
-          "Recently Played",
-          style: TextStyle(
+        title: Text(
+          AppLocalizations.of(context).recentlyPlayed,
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
@@ -217,7 +229,7 @@ class _RecentlyPlayedScreenState
                 CrossAxisAlignment.start,
             children: [
               Text(
-                formatDate(date),
+                formatDate(context, date),
                 style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,

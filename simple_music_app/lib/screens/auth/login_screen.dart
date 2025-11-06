@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 import 'register_screen.dart';
 import '../main_screen.dart';
 import '../auth/auth_state.dart';
@@ -48,9 +49,11 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text(
-                    "ĐĂNG NHẬP",
-                    style: TextStyle(
+                  Text(
+                    AppLocalizations.of(
+                      context,
+                    ).loginButton,
+                    style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Color(0xFF6C63FF),
@@ -65,7 +68,9 @@ class LoginScreen extends StatelessWidget {
                       prefixIcon: const Icon(
                         Icons.email_outlined,
                       ),
-                      hintText: "Email",
+                      hintText: AppLocalizations.of(
+                        context,
+                      ).emailHint,
                       filled: true,
                       fillColor: Colors.grey[100],
                       border: OutlineInputBorder(
@@ -85,7 +90,9 @@ class LoginScreen extends StatelessWidget {
                       prefixIcon: const Icon(
                         Icons.lock_outline,
                       ),
-                      hintText: "Mật khẩu",
+                      hintText: AppLocalizations.of(
+                        context,
+                      ).passwordHint,
                       filled: true,
                       fillColor: Colors.grey[100],
                       border: OutlineInputBorder(
@@ -136,9 +143,11 @@ class LoginScreen extends StatelessWidget {
                               ),
                         ),
                       ),
-                      child: const Text(
-                        "ĐĂNG NHẬP",
-                        style: TextStyle(
+                      child: Text(
+                        AppLocalizations.of(
+                          context,
+                        ).loginButton,
+                        style: const TextStyle(
                           fontSize: 18,
                           color: Colors.white,
                         ),
@@ -157,9 +166,11 @@ class LoginScreen extends StatelessWidget {
                         ),
                       );
                     },
-                    child: const Text(
-                      "Chưa có tài khoản? Đăng ký",
-                      style: TextStyle(
+                    child: Text(
+                      AppLocalizations.of(
+                        context,
+                      ).dontHaveAccount,
+                      style: const TextStyle(
                         color: Colors.blueAccent,
                         fontSize: 14,
                       ),

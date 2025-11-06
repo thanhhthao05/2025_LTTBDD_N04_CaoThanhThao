@@ -1,6 +1,7 @@
 // màn hình chi tiết nghệ sĩ
 import 'package:flutter/material.dart';
 import '../../player/player_screen.dart';
+import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 
 class ArtistDetailScreen extends StatefulWidget {
   final String artistName;
@@ -35,21 +36,26 @@ class _ArtistDetailScreenState
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text("Thêm bài hát mới"),
+        title: Text(
+          AppLocalizations.of(context).addNewSong,
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             TextField(
               controller: titleController,
-              decoration: const InputDecoration(
-                labelText: "Tên bài hát",
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(
+                  context,
+                ).nameHint,
               ),
             ),
             TextField(
               controller: imgController,
-              decoration: const InputDecoration(
-                labelText:
-                    "Đường dẫn ảnh (ví dụ: imgs/NewSong.jpg)",
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(
+                  context,
+                ).imagePathHint,
               ),
             ),
           ],
@@ -57,7 +63,9 @@ class _ArtistDetailScreenState
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Hủy"),
+            child: Text(
+              AppLocalizations.of(context).cancel,
+            ),
           ),
           ElevatedButton(
             onPressed: () {
@@ -75,7 +83,9 @@ class _ArtistDetailScreenState
                 Navigator.pop(context);
               }
             },
-            child: const Text("Thêm"),
+            child: Text(
+              AppLocalizations.of(context).add,
+            ),
           ),
         ],
       ),
@@ -165,9 +175,9 @@ class _ArtistDetailScreenState
                 Icons.play_arrow,
                 color: Colors.white,
               ),
-              label: const Text(
-                'Phát tất cả',
-                style: TextStyle(
+              label: Text(
+                AppLocalizations.of(context).playAll,
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),

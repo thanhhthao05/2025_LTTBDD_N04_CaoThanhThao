@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'models/app_settings.dart';
 import 'screens/main_screen.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
-  runApp(const SimpleMusicApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => AppSettings(),
+      child: const SimpleMusicApp(),
+    ),
+  );
 }
 
 class SimpleMusicApp extends StatelessWidget {
@@ -10,9 +19,32 @@ class SimpleMusicApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    final settings = Provider.of<AppSettings>(context);
+
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MainScreen(),
+      title: 'Simple Music App',
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(
+          0xFF121212,
+        ),
+      ),
+      themeMode: settings.darkMode
+          ? ThemeMode.dark
+          : ThemeMode.light,
+      locale: settings.locale,
+      supportedLocales: const [
+        Locale('vi'),
+        Locale('en'),
+      ],
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      home: const MainScreen(),
     );
   }
 }
