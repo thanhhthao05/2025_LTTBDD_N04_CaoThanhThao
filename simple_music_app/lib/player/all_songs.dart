@@ -45,8 +45,6 @@ final List<Map<String, String>> ngheGanDay = [
   },
   {'title': 'Chăm Hoa', 'img': 'imgs/Chăm_hoa.jpg'},
   {'title': 'Perfect', 'img': 'imgs/Perfect.jpg'},
-  {'title': '3107 3', 'img': 'imgs/3107_3.jpg'},
-  {'title': 'K-Pop', 'img': 'imgs/K_POP.jpg'},
 ];
 
 // 🔥 BÀI HÁT HOT

@@ -7,6 +7,7 @@ import 'dart:ui';
 import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
 import 'share_song.dart';
 import 'song_model.dart';
+import 'recently_played_manager.dart';
 
 class PlayerScreen extends StatefulWidget {
   final List<Map<String, String>> songs;
@@ -48,6 +49,13 @@ class _PlayerScreenState extends State<PlayerScreen>
 
     startTimer();
     _checkFavorite();
+    // Register the currently playing song in recently played
+    final s = SongModel(
+      title: currentSong['title'] ?? '',
+      artist: currentSong['artist'] ?? '',
+      image: currentSong['img'] ?? '',
+    );
+    RecentlyPlayedManager.instance.add(s);
   }
 
   Future<void> _checkFavorite() async {
@@ -89,6 +97,13 @@ class _PlayerScreenState extends State<PlayerScreen>
       _rotationController.repeat();
     });
     _checkFavorite();
+    // add to recently played
+    final s = SongModel(
+      title: currentSong['title'] ?? '',
+      artist: currentSong['artist'] ?? '',
+      image: currentSong['img'] ?? '',
+    );
+    RecentlyPlayedManager.instance.add(s);
   }
 
   void previousSong() {
@@ -101,6 +116,13 @@ class _PlayerScreenState extends State<PlayerScreen>
       _rotationController.repeat();
     });
     _checkFavorite();
+    // add to recently played
+    final s = SongModel(
+      title: currentSong['title'] ?? '',
+      artist: currentSong['artist'] ?? '',
+      image: currentSong['img'] ?? '',
+    );
+    RecentlyPlayedManager.instance.add(s);
   }
 
   @override
