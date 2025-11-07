@@ -7,51 +7,42 @@ class RecentlyPlayedManager {
   static final RecentlyPlayedManager _instance =
       RecentlyPlayedManager._internal();
 
-  static RecentlyPlayedManager get instance =>
-      _instance;
+  static RecentlyPlayedManager get instance => _instance;
 
   /// The map key is a date string like dd/MM/yyyy
-  final ValueNotifier<Map<String, List<SongModel>>>
-  recentlyPlayed = ValueNotifier({});
+  final ValueNotifier<Map<String, List<SongModel>>> _recentlyPlayedNotifier =
+      ValueNotifier({});
+
+  ValueNotifier<Map<String, List<SongModel>>> get recentlyPlayedNotifier =>
+      _recentlyPlayedNotifier;
+
+  ValueListenable<Map<String, List<SongModel>>> get recentlyPlayed =>
+      _recentlyPlayedNotifier;
 
   String _formatDateKey(DateTime date) =>
       "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
 
   void add(SongModel newSong) {
     final map = Map<String, List<SongModel>>.from(
-      recentlyPlayed.value,
+      _recentlyPlayedNotifier.value,
     );
     final today = _formatDateKey(DateTime.now());
-    final yesterdayKey = _formatDateKey(
-      DateTime.now().subtract(const Duration(days: 1)),
-    );
 
     // Remove duplicates anywhere
     for (final entry in map.entries) {
       entry.value.removeWhere(
-        (s) =>
-            s.title == newSong.title &&
-            s.artist == newSong.artist,
+        (s) => s.title == newSong.title && s.artist == newSong.artist,
       );
     }
 
-    if (map.containsKey(today)) {
-      final oldToday = map[today]!;
-      if (oldToday.isNotEmpty) {
-        if (map.containsKey(yesterdayKey)) {
-          map[yesterdayKey] = [
-            ...oldToday,
-            ...map[yesterdayKey]!,
-          ];
-        } else {
-          map[yesterdayKey] = List.from(oldToday);
-        }
-      }
-      map.remove(today);
-    }
+    final todayList = map[today] != null
+        ? List<SongModel>.from(map[today]!)
+        : <SongModel>[];
+    todayList.insert(0, newSong);
+    map[today] = todayList;
 
-    map[today] = [newSong];
+    map.removeWhere((key, value) => value.isEmpty);
 
-    recentlyPlayed.value = map;
+    _recentlyPlayedNotifier.value = map;
   }
 }

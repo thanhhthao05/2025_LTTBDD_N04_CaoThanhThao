@@ -20,14 +20,14 @@ class _RecentlyPlayedScreenState
 
     // If manager has no data, seed it with sample entries so the UI isn't empty.
     final manager = RecentlyPlayedManager.instance;
-    if (manager.recentlyPlayed.value.isEmpty) {
+    if (manager.recentlyPlayedNotifier.value.isEmpty) {
       final today = _formatDateKey(DateTime.now());
       final yesterday = _formatDateKey(
         DateTime.now().subtract(
           const Duration(days: 1),
         ),
       );
-      manager.recentlyPlayed.value = {
+      manager.recentlyPlayedNotifier.value = {
         today: [
           SongModel(
             title: "Hẹn Gặp Em Dưới Ánh Trăng",

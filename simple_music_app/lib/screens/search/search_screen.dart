@@ -1,51 +1,118 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
-import '../main_screen.dart';
-import '../../screens/song_options_menu.dart';
+
+import '../../config/spotify_config.dart';
 import '../../player/player_screen.dart';
-import '../../player/all_songs.dart';
+import '../../player/recently_played_manager.dart';
+import '../../screens/song_options_menu.dart';
+import '../../services/spotify_service.dart';
+import '../main_screen.dart';
 import 'search_result_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
   @override
-  State<SearchScreen> createState() =>
-      _SearchScreenState();
+  State<SearchScreen> createState() => _SearchScreenState();
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  final SpotifyService _spotifyService = SpotifyService();
+  Timer? _debounce;
   // suggestion keys - map to localized labels below
-  final List<String> suggestions = [
-    'recentlyPlayed',
-    'hot',
-    'suggestedSongs',
-  ];
+  final List<String> suggestions = ['recentlyPlayed', 'hot', 'suggestedSongs'];
   String searchQuery = '';
+  final List<String> _searchHistory = [];
+  List<SpotifyTrack> _searchResults = const [];
+  bool _loading = false;
+  String? _errorMessage;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _debounce?.cancel();
+    super.dispose();
+  }
+
+  void _recordHistory(String title) {
+    final normalized = title.trim();
+    if (normalized.isEmpty) return;
+    setState(() {
+      _searchHistory.removeWhere(
+        (item) => item.toLowerCase() == normalized.toLowerCase(),
+      );
+      _searchHistory.insert(0, normalized);
+    });
+  }
+
+  void _clearHistory() {
+    if (_searchHistory.isEmpty) return;
+    setState(() {
+      _searchHistory.clear();
+    });
+  }
+
+  void _onQueryChanged(String value) {
+    setState(() {
+      searchQuery = value;
+      if (value.isEmpty) {
+        _searchResults = const [];
+        _errorMessage = null;
+      }
+    });
+
+    _debounce?.cancel();
+    if (value.trim().isEmpty) return;
+    _debounce = Timer(const Duration(milliseconds: 450), () {
+      _performSearch(value);
+    });
+  }
+
+  Future<void> _performSearch(String query) async {
+    setState(() {
+      _loading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final results = await _spotifyService.searchTracks(query);
+      if (!mounted) return;
+      setState(() {
+        _searchResults = results;
+        _loading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = e.toString();
+        _loading = false;
+      });
+    }
+  }
+
+  void _openTracks(List<SpotifyTrack> tracks, int index) {
+    if (tracks.isEmpty) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PlayerScreen(
+          songs: tracks.map((e) => e.toSongMap()).toList(),
+          currentIndex: index,
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    final filteredSongs = allSongs
-        .where(
-          (song) =>
-              song['title']!.toLowerCase().contains(
-                searchQuery.toLowerCase(),
-              ) ||
-              song['artist']!.toLowerCase().contains(
-                searchQuery.toLowerCase(),
-              ),
-        )
-        .toList();
-
     return Scaffold(
-      backgroundColor: Theme.of(
-        context,
-      ).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor:
-            Theme.of(
-              context,
-            ).appBarTheme.backgroundColor ??
+            Theme.of(context).appBarTheme.backgroundColor ??
             Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         automaticallyImplyLeading: false,
@@ -54,17 +121,13 @@ class _SearchScreenState extends State<SearchScreen> {
             IconButton(
               icon: Icon(
                 Icons.arrow_back,
-                color: Theme.of(
-                  context,
-                ).iconTheme.color,
+                color: Theme.of(context).iconTheme.color,
               ),
               onPressed: () {
                 Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const MainScreen(
-                      initialIndex: 1,
-                    ),
+                    builder: (_) => const MainScreen(initialIndex: 1),
                   ),
                   (route) => false,
                 );
@@ -72,19 +135,16 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
             Expanded(
               child: TextField(
+                controller: _searchController,
                 decoration: InputDecoration(
-                  hintText: AppLocalizations.of(
-                    context,
-                  ).searchHint,
-                  hintStyle: const TextStyle(
-                    color: Colors.grey,
-                  ),
+                  hintText: AppLocalizations.of(context).searchHint,
+                  hintStyle: const TextStyle(color: Colors.grey),
                   border: InputBorder.none,
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    searchQuery = value;
-                  });
+                onChanged: _onQueryChanged,
+                onSubmitted: (value) {
+                  _recordHistory(value);
+                  _performSearch(value);
                 },
               ),
             ),
@@ -92,19 +152,14 @@ class _SearchScreenState extends State<SearchScreen> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 8),
               Text(
-                AppLocalizations.of(
-                  context,
-                ).suggestedSongs,
+                AppLocalizations.of(context).suggestedSongs,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -119,47 +174,17 @@ class _SearchScreenState extends State<SearchScreen> {
                 children: suggestions.map((s) {
                   String label;
                   if (s == 'recentlyPlayed') {
-                    label = AppLocalizations.of(
-                      context,
-                    ).recentlyPlayed;
+                    label = AppLocalizations.of(context).recentlyPlayed;
                   } else if (s == 'hot') {
-                    label = AppLocalizations.of(
-                      context,
-                    ).hotToday;
+                    label = AppLocalizations.of(context).hotToday;
                   } else {
-                    label = AppLocalizations.of(
-                      context,
-                    ).suggestedSongs;
+                    label = AppLocalizations.of(context).suggestedSongs;
                   }
 
                   return ActionChip(
                     label: Text(label),
-                    backgroundColor: Theme.of(
-                      context,
-                    ).cardColor,
-                    onPressed: () {
-                      List<Map<String, String>>
-                      selectedSongs = [];
-
-                      if (s == 'recentlyPlayed') {
-                        selectedSongs = ngheGanDay;
-                      } else if (s == 'hot') {
-                        selectedSongs = hot;
-                      } else {
-                        selectedSongs = allSongs;
-                      }
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              SearchResultScreen(
-                                title: label,
-                                songs: selectedSongs,
-                              ),
-                        ),
-                      );
-                    },
+                    backgroundColor: Theme.of(context).cardColor,
+                    onPressed: () => _handleSuggestionTap(context, s, label),
                   );
                 }).toList(),
               ),
@@ -169,13 +194,10 @@ class _SearchScreenState extends State<SearchScreen> {
               // 🕘 Lịch sử tìm kiếm
               if (searchQuery.isEmpty) ...[
                 Row(
-                  mainAxisAlignment:
-                      MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      AppLocalizations.of(
-                        context,
-                      ).searchHistory,
+                      AppLocalizations.of(context).searchHistory,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -183,14 +205,10 @@ class _SearchScreenState extends State<SearchScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        setState(() {
-                          allSongs.clear();
-                        });
+                        _clearHistory();
                       },
                       child: Text(
-                        AppLocalizations.of(
-                          context,
-                        ).clear,
+                        AppLocalizations.of(context).clear,
                         style: const TextStyle(
                           color: Colors.purple,
                           fontWeight: FontWeight.bold,
@@ -200,119 +218,146 @@ class _SearchScreenState extends State<SearchScreen> {
                   ],
                 ),
                 const SizedBox(height: 12),
+                if (_searchHistory.isEmpty)
+                  Text(
+                    AppLocalizations.of(context).noResults,
+                    style:
+                        Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context).hintColor,
+                        ) ??
+                        const TextStyle(color: Colors.grey),
+                  )
+                else
+                  Column(
+                    children: _searchHistory.map((keyword) {
+                      return ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: const Icon(Icons.history),
+                        title: Text(keyword),
+                        onTap: () {
+                          setState(() {
+                            searchQuery = keyword;
+                            _searchController.text = keyword;
+                          });
+                          _performSearch(keyword);
+                        },
+                      );
+                    }).toList(),
+                  ),
               ],
 
               // 📝 Kết quả tìm kiếm
-              if (filteredSongs.isEmpty)
+              if (_loading)
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(30),
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+              else if (_errorMessage != null)
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Text(
+                    _errorMessage!,
+                    style: const TextStyle(color: Colors.redAccent),
+                  ),
+                )
+              else if (_searchResults.isEmpty)
                 Center(
                   child: Padding(
                     padding: const EdgeInsets.all(30),
                     child: Text(
-                      AppLocalizations.of(
-                        context,
-                      ).noResults,
+                      AppLocalizations.of(context).noResults,
                       style:
-                          Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).hintColor,
-                              ) ??
-                          const TextStyle(
-                            color: Colors.grey,
-                          ),
+                          Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).hintColor,
+                          ) ??
+                          const TextStyle(color: Colors.grey),
                     ),
                   ),
                 )
               else
                 Column(
-                  children: filteredSongs.asMap().entries.map((
-                    entry,
-                  ) {
+                  children: _searchResults.asMap().entries.map((entry) {
                     final index = entry.key;
-                    final item = entry.value;
+                    final track = entry.value;
+                    final songMap = track.toSongMap();
                     return ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(8),
-                        child: Image.asset(
-                          item['img']!,
-                          width: 50,
-                          height: 50,
-                          fit: BoxFit.cover,
-                        ),
+                      leading: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              track.imageUrl,
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                              errorBuilder: (_, __, ___) =>
+                                  const Icon(Icons.image_not_supported),
+                            ),
+                          ),
+                          // Indicator cho bài có preview
+                          if (track.previewUrl != null)
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: Container(
+                                padding: const EdgeInsets.all(3),
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.3),
+                                      blurRadius: 3,
+                                      offset: const Offset(0, 1),
+                                    ),
+                                  ],
+                                ),
+                                child: const Icon(
+                                  Icons.play_arrow,
+                                  color: Colors.white,
+                                  size: 12,
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                       title: Text(
-                        item['title']!,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        track.title,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(
-                        item['artist']!,
-                        style: const TextStyle(
-                          color: Colors.grey,
-                        ),
+                        track.artist,
+                        style: const TextStyle(color: Colors.grey),
                       ),
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) =>
-                                PlayerScreen(
-                                  songs: filteredSongs,
-                                  currentIndex: index,
-                                ),
-                          ),
-                        );
+                        _recordHistory(track.title);
+                        _openTracks(_searchResults, index);
                       },
                       trailing: SongOptionsMenu(
-                        song: item,
+                        song: songMap,
                         onPlay: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) =>
-                                  PlayerScreen(
-                                    songs:
-                                        filteredSongs,
-                                    currentIndex:
-                                        index,
-                                  ),
-                            ),
-                          );
+                          _recordHistory(track.title);
+                          _openTracks(_searchResults, index);
                         },
                         onAddToPlaylist: () {
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
                                 AppLocalizations.of(
                                   context,
-                                ).addedToPlaylist(
-                                  item['title'] ?? '',
-                                ),
+                                ).addedToPlaylist(track.title),
                               ),
                             ),
                           );
                         },
                         onDelete: () {
                           setState(() {
-                            allSongs.remove(item);
+                            _searchResults = List.of(_searchResults)
+                              ..removeAt(index);
                           });
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                "🗑 Đã xóa khỏi danh sách tìm kiếm",
-                              ),
-                            ),
-                          );
                         },
                       ),
                     );
@@ -321,6 +366,63 @@ class _SearchScreenState extends State<SearchScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _handleSuggestionTap(
+    BuildContext context,
+    String key,
+    String label,
+  ) async {
+    List<Map<String, String>> songs = [];
+    if (key == 'recentlyPlayed') {
+      final data = RecentlyPlayedManager.instance.recentlyPlayedNotifier.value;
+      final collected = data.values.expand((element) => element).toList();
+      if (collected.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Chưa có lịch sử nghe gần đây.')),
+          );
+        }
+        return;
+      }
+      songs = collected.map((song) => song.toMap()).toList();
+    } else {
+      try {
+        setState(() {
+          _loading = true;
+          _errorMessage = null;
+        });
+        final tracks = await _spotifyService.fetchRecommendations(
+          seedGenres: key == 'hot'
+              ? spotifyHotSeedGenres
+              : spotifySuggestedSeedGenres,
+          limit: 30,
+        );
+        songs = tracks.map((e) => e.toSongMap()).toList();
+        if (mounted) {
+          setState(() {
+            _loading = false;
+            _searchResults = tracks;
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _loading = false;
+            _errorMessage = e.toString();
+          });
+        }
+        return;
+      }
+    }
+
+    if (!mounted) return;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SearchResultScreen(title: label, songs: songs),
       ),
     );
   }

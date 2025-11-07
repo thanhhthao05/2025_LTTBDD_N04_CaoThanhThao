@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'models/app_settings.dart';
-import 'screens/main_screen.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:simple_music_app/flutter_gen/gen_l10n/app_localizations.dart';
+import 'models/app_settings.dart';
+import 'screens/account/favorite_manager.dart';
+import 'screens/main_screen.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FavoriteManager.init();
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => AppSettings(),
@@ -26,18 +30,11 @@ class SimpleMusicApp extends StatelessWidget {
       title: 'Simple Music App',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: const Color(
-          0xFF121212,
-        ),
+        scaffoldBackgroundColor: const Color(0xFF121212),
       ),
-      themeMode: settings.darkMode
-          ? ThemeMode.dark
-          : ThemeMode.light,
+      themeMode: settings.darkMode ? ThemeMode.dark : ThemeMode.light,
       locale: settings.locale,
-      supportedLocales: const [
-        Locale('vi'),
-        Locale('en'),
-      ],
+      supportedLocales: const [Locale('vi'), Locale('en')],
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,

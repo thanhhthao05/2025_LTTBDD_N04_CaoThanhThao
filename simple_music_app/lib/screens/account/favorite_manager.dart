@@ -83,7 +83,7 @@ class FavoriteManager {
   }
 
   // 🔍 Kiểm tra bài hát có được yêu thích không
-  static bool isFavorite(SongModel song) {
+  static Future<bool> isFavorite(SongModel song) async {
     return favoriteSongs.value.any(
       (s) =>
           s.title == song.title &&

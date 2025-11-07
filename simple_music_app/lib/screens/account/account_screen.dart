@@ -15,12 +15,10 @@ class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
 
   @override
-  State<AccountScreen> createState() =>
-      _AccountScreenState();
+  State<AccountScreen> createState() => _AccountScreenState();
 }
 
-class _AccountScreenState
-    extends State<AccountScreen> {
+class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<bool>(
@@ -40,34 +38,21 @@ class _AccountScreenState
   }
 
   // Giao diện ĐÃ đăng nhập
-  Widget _buildLoggedInUI(
-    BuildContext context,
-    Map<String, dynamic> userData,
-  ) {
+  Widget _buildLoggedInUI(BuildContext context, Map<String, dynamic> userData) {
     final loc = AppLocalizations.of(context);
     // Danh sách playlist được gợi ý
     final List<Map<String, String>> suggested = [
-      {
-        'title': 'Tràn Bộ Nhớ',
-        'img': 'imgs/Tràn_Bộ_Nhớ.jpg',
-      },
-      {
-        'title': 'Bước Qua Nhau',
-        'img': 'imgs/Buoc_Qua_Nhau.jpg',
-      },
+      {'title': 'Tràn Bộ Nhớ', 'img': 'imgs/Tràn_Bộ_Nhớ.jpg'},
+      {'title': 'Bước Qua Nhau', 'img': 'imgs/Buoc_Qua_Nhau.jpg'},
       {'title': 'Perfect', 'img': 'imgs/Perfect.jpg'},
       {'title': '3107 3', 'img': 'imgs/3107_3.jpg'},
     ];
 
     return Scaffold(
-      backgroundColor: Theme.of(
-        context,
-      ).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor:
-            Theme.of(
-              context,
-            ).appBarTheme.backgroundColor ??
+            Theme.of(context).appBarTheme.backgroundColor ??
             Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
         title: Text(
@@ -75,12 +60,8 @@ class _AccountScreenState
           style:
               Theme.of(
                 context,
-              ).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-              ) ??
-              const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold) ??
+              const TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
@@ -92,10 +73,7 @@ class _AccountScreenState
               // 👉 Chuyển sang màn hình What's New
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      const WhatsNewScreen(),
-                ),
+                MaterialPageRoute(builder: (context) => const WhatsNewScreen()),
               );
             },
           ),
@@ -110,9 +88,8 @@ class _AccountScreenState
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => SettingsScreen(
-                    userName: AuthState.username,
-                  ),
+                  builder: (context) =>
+                      SettingsScreen(userName: AuthState.username),
                 ),
               );
             },
@@ -122,9 +99,7 @@ class _AccountScreenState
       ),
 
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -139,11 +114,8 @@ class _AccountScreenState
                     context,
                   ).colorScheme.primaryContainer,
                   child: Icon(
-                    Icons
-                        .person, // 👤 Biểu tượng mặc định
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onPrimaryContainer,
+                    Icons.person, // 👤 Biểu tượng mặc định
+                    color: Theme.of(context).colorScheme.onPrimaryContainer,
                     size: 40,
                   ),
                 ),
@@ -151,13 +123,9 @@ class _AccountScreenState
                 Text(
                   "${loc.greeting}, ${userData['name']}",
                   style:
-                      Theme.of(context)
-                          .textTheme
-                          .titleMedium
-                          ?.copyWith(
-                            fontWeight:
-                                FontWeight.w600,
-                          ) ??
+                      Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ) ??
                       const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
@@ -168,32 +136,21 @@ class _AccountScreenState
             const SizedBox(height: 25),
 
             Text(
-              AppLocalizations.of(
-                context,
-              ).yourPlaylists,
+              AppLocalizations.of(context).yourPlaylists,
               style:
-                  Theme.of(
-                    context,
-                  ).textTheme.titleMedium?.copyWith(
+                  Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ) ??
-                  const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
 
             // 🎧 Playlist của bạn (cập nhật động)
             ValueListenableBuilder<List<SongModel>>(
-              valueListenable:
-                  FavoriteManager.favoriteSongs,
+              valueListenable: FavoriteManager.favoriteSongs,
               builder: (context, favoriteSongs, _) {
                 final playlists = [
-                  {
-                    'icon': Icons.music_note,
-                    'title': loc.recentlyPlayed,
-                  },
+                  {'icon': Icons.music_note, 'title': loc.recentlyPlayed},
                   {
                     'icon': Icons.favorite,
                     'title': loc.favoriteMusic,
@@ -206,37 +163,27 @@ class _AccountScreenState
                     return ListTile(
                       leading: Icon(
                         p['icon'] as IconData,
-                        color: Theme.of(context)
-                            .iconTheme
-                            .color
-                            ?.withOpacity(0.95),
+                        color: Theme.of(
+                          context,
+                        ).iconTheme.color?.withOpacity(0.95),
                       ),
                       title: Text(
                         p['title'] as String,
-                        style: Theme.of(
-                          context,
-                        ).textTheme.bodyLarge,
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                      subtitle:
-                          p['title'] ==
-                              loc.favoriteMusic
+                      subtitle: p['title'] == loc.favoriteMusic
                           ? Text(
                               "${p['songs']} ${AppLocalizations.of(context).songsTab}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
+                              style: Theme.of(context).textTheme.bodySmall
                                   ?.copyWith(
-                                    color: Theme.of(
-                                      context,
-                                    ).hintColor,
+                                    color: Theme.of(context).hintColor,
                                   ),
                             )
                           : null,
                       dense: true,
                       contentPadding: EdgeInsets.zero,
                       onTap: () {
-                        if (p['title'] ==
-                            loc.recentlyPlayed) {
+                        if (p['title'] == loc.recentlyPlayed) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -244,13 +191,11 @@ class _AccountScreenState
                                   const RecentlyPlayedScreen(),
                             ),
                           );
-                        } else if (p['title'] ==
-                            loc.favoriteMusic) {
+                        } else if (p['title'] == loc.favoriteMusic) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  const FavoriteSongsScreen(),
+                              builder: (context) => const FavoriteSongsScreen(),
                             ),
                           );
                         }
@@ -262,26 +207,16 @@ class _AccountScreenState
             ),
 
             const SizedBox(height: 10),
-            Divider(
-              thickness: 1,
-              color: Theme.of(context).dividerColor,
-            ),
+            Divider(thickness: 1, color: Theme.of(context).dividerColor),
             const SizedBox(height: 10),
 
             Text(
-              AppLocalizations.of(
-                context,
-              ).suggestedPlaylists,
+              AppLocalizations.of(context).suggestedPlaylists,
               style:
-                  Theme.of(
-                    context,
-                  ).textTheme.titleMedium?.copyWith(
+                  Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.bold,
                   ) ??
-                  const TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  const TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
 
@@ -304,8 +239,7 @@ class _AccountScreenState
 
                   return ListTile(
                     leading: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8),
                       child: Image.asset(
                         s['img']!,
                         width: 50,
@@ -322,8 +256,7 @@ class _AccountScreenState
                           builder: (_) => PlayerScreen(
                             songs:
                                 songListConverted, // truyền toàn bộ danh sách
-                            currentIndex:
-                                index, // vị trí bài được nhấn
+                            currentIndex: index, // vị trí bài được nhấn
                           ),
                         ),
                       );
@@ -343,14 +276,8 @@ class _AccountScreenState
   // Giao diện CHƯA đăng nhập
   Widget _buildLoggedOutUI(BuildContext context) {
     final suggested = [
-      {
-        'title': 'Tràn Bộ Nhớ',
-        'img': 'imgs/Tràn_Bộ_Nhớ.jpg',
-      },
-      {
-        'title': 'Bước Qua Nhau',
-        'img': 'imgs/Buoc_Qua_Nhau.jpg',
-      },
+      {'title': 'Tràn Bộ Nhớ', 'img': 'imgs/Tràn_Bộ_Nhớ.jpg'},
+      {'title': 'Bước Qua Nhau', 'img': 'imgs/Buoc_Qua_Nhau.jpg'},
     ];
 
     return Scaffold(
@@ -360,48 +287,30 @@ class _AccountScreenState
         elevation: 0,
         title: const Text(
           "Tài khoản",
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
         ),
         actions: const [
-          Icon(
-            Icons.notifications_none,
-            color: Colors.black,
-          ),
+          Icon(Icons.notifications_none, color: Colors.black),
           SizedBox(width: 15),
-          Icon(
-            Icons.settings_outlined,
-            color: Colors.black,
-          ),
+          Icon(Icons.settings_outlined, color: Colors.black),
           SizedBox(width: 15),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 24,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: SingleChildScrollView(
           child: Column(
-            crossAxisAlignment:
-                CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(height: 30),
               const CircleAvatar(
                 radius: 50,
                 backgroundColor: Colors.black12,
-                child: Icon(
-                  Icons.person,
-                  color: Colors.black54,
-                  size: 55,
-                ),
+                child: Icon(Icons.person, color: Colors.black54, size: 55),
               ),
               const SizedBox(height: 15),
               Text(
-                AppLocalizations.of(
-                  context,
-                ).loginPrompt,
+                AppLocalizations.of(context).loginPrompt,
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 15,
@@ -411,37 +320,29 @@ class _AccountScreenState
               ),
               const SizedBox(height: 25),
               Row(
-                mainAxisAlignment:
-                    MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   OutlinedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              const LoginScreen(),
+                          builder: (context) => const LoginScreen(),
                         ),
                       );
                     },
                     style: OutlinedButton.styleFrom(
-                      side: const BorderSide(
-                        color: Colors.deepPurple,
-                      ),
+                      side: const BorderSide(color: Colors.deepPurple),
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(25),
+                        borderRadius: BorderRadius.circular(25),
                       ),
-                      padding:
-                          const EdgeInsets.symmetric(
-                            horizontal: 30,
-                            vertical: 12,
-                          ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 12,
+                      ),
                     ),
                     child: Text(
-                      AppLocalizations.of(
-                        context,
-                      ).loginButton,
+                      AppLocalizations.of(context).loginButton,
                       style: const TextStyle(
                         color: Colors.deepPurple,
                         fontWeight: FontWeight.bold,
@@ -454,28 +355,22 @@ class _AccountScreenState
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) =>
-                              RegisterScreen(),
+                          builder: (context) => RegisterScreen(),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Colors.deepPurple,
+                      backgroundColor: Colors.deepPurple,
                       shape: RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius.circular(25),
+                        borderRadius: BorderRadius.circular(25),
                       ),
-                      padding:
-                          const EdgeInsets.symmetric(
-                            horizontal: 30,
-                            vertical: 12,
-                          ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 30,
+                        vertical: 12,
+                      ),
                     ),
                     child: Text(
-                      AppLocalizations.of(
-                        context,
-                      ).signupButton,
+                      AppLocalizations.of(context).signupButton,
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -492,14 +387,11 @@ class _AccountScreenState
                 width: double.infinity,
                 decoration: BoxDecoration(
                   color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(
-                    15,
-                  ),
+                  borderRadius: BorderRadius.circular(15),
                 ),
                 child: Center(
                   child: Column(
-                    mainAxisAlignment:
-                        MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const Icon(
                         Icons.lock_outline,
@@ -508,9 +400,7 @@ class _AccountScreenState
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        AppLocalizations.of(
-                          context,
-                        ).loginCardPrompt,
+                        AppLocalizations.of(context).loginCardPrompt,
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Colors.black54,
@@ -528,19 +418,14 @@ class _AccountScreenState
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "Playlist được gợi ý",
-                  style: TextStyle(
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 10),
 
               // --- Playlist được gợi ý (khi chưa đăng nhập) ---
               Column(
-                children: List.generate(suggested.length, (
-                  index,
-                ) {
+                children: List.generate(suggested.length, (index) {
                   final s = suggested[index];
                   final songListConverted = suggested
                       .map(
@@ -554,8 +439,7 @@ class _AccountScreenState
 
                   return ListTile(
                     leading: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(8),
                       child: Image.asset(
                         s['img']!,
                         width: 50,
@@ -571,8 +455,7 @@ class _AccountScreenState
                         MaterialPageRoute(
                           builder: (_) => PlayerScreen(
                             songs: songListConverted,
-                            currentIndex:
-                                index, // Vị trí bài được nhấn
+                            currentIndex: index, // Vị trí bài được nhấn
                           ),
                         ),
                       );
@@ -598,11 +481,7 @@ class _AccountScreenState
         borderRadius: BorderRadius.circular(12),
       ),
       child: const Center(
-        child: Icon(
-          Icons.image,
-          color: Colors.black38,
-          size: 40,
-        ),
+        child: Icon(Icons.image, color: Colors.black38, size: 40),
       ),
     );
   }

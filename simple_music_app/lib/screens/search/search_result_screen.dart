@@ -19,33 +19,21 @@ class SearchResultScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(title),
         backgroundColor:
-            Theme.of(
-              context,
-            ).appBarTheme.backgroundColor ??
+            Theme.of(context).appBarTheme.backgroundColor ??
             Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
-        iconTheme: IconThemeData(
-          color: Theme.of(context).iconTheme.color,
-        ),
+        iconTheme: IconThemeData(color: Theme.of(context).iconTheme.color),
       ),
-      backgroundColor: Theme.of(
-        context,
-      ).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: songs.isEmpty
           ? Center(
               child: Text(
                 "Không có bài hát nào 😢",
                 style:
-                    Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(
-                      color: Theme.of(
-                        context,
-                      ).hintColor,
+                    Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).hintColor,
                     ) ??
-                    const TextStyle(
-                      color: Colors.grey,
-                    ),
+                    const TextStyle(color: Colors.grey),
               ),
             )
           : ListView.builder(
@@ -56,36 +44,23 @@ class SearchResultScreen extends StatelessWidget {
                 return ListTile(
                   contentPadding: EdgeInsets.zero,
                   leading: ClipRRect(
-                    borderRadius:
-                        BorderRadius.circular(8),
-                    child: Image.asset(
-                      song['img']!,
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
-                    ),
+                    borderRadius: BorderRadius.circular(8),
+                    child: _buildImage(song['img']),
                   ),
                   title: Text(
                     song['title']!,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    song['artist'] ??
-                        'Không rõ nghệ sĩ',
-                    style: const TextStyle(
-                      color: Colors.grey,
-                    ),
+                    song['artist'] ?? 'Không rõ nghệ sĩ',
+                    style: const TextStyle(color: Colors.grey),
                   ),
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => PlayerScreen(
-                          songs: songs,
-                          currentIndex: index,
-                        ),
+                        builder: (_) =>
+                            PlayerScreen(songs: songs, currentIndex: index),
                       ),
                     );
                   },
@@ -95,17 +70,13 @@ class SearchResultScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => PlayerScreen(
-                            songs: songs,
-                            currentIndex: index,
-                          ),
+                          builder: (_) =>
+                              PlayerScreen(songs: songs, currentIndex: index),
                         ),
                       );
                     },
                     onAddToPlaylist: () {
-                      ScaffoldMessenger.of(
-                        context,
-                      ).showSnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
                             "🎶 Đã thêm '${song['title']}' vào danh sách phát.",
@@ -120,4 +91,31 @@ class SearchResultScreen extends StatelessWidget {
             ),
     );
   }
+}
+
+Widget _buildImage(String? src) {
+  const double size = 50;
+  if (src == null || src.isEmpty) {
+    return Container(
+      width: size,
+      height: size,
+      color: Colors.grey[300],
+      child: const Icon(Icons.music_note, color: Colors.white70),
+    );
+  }
+  if (src.startsWith('http')) {
+    return Image.network(
+      src,
+      width: size,
+      height: size,
+      fit: BoxFit.cover,
+      errorBuilder: (_, __, ___) => Container(
+        width: size,
+        height: size,
+        color: Colors.grey[300],
+        child: const Icon(Icons.image_not_supported, color: Colors.white70),
+      ),
+    );
+  }
+  return Image.asset(src, width: size, height: size, fit: BoxFit.cover);
 }
