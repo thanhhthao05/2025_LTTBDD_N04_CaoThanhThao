@@ -130,7 +130,7 @@ class _LibraryScreenState
                       'img':
                           imgController.text.isNotEmpty
                           ? imgController.text
-                          : 'imgs/default_artist.jpg',
+                          : '',
                       'songs': [],
                     });
                   });

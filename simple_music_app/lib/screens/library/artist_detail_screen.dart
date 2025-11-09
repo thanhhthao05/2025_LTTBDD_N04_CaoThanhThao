@@ -135,24 +135,34 @@ class _ArtistDetailScreenState
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 📸 Ảnh bìa nghệ sĩ
-          Container(
-            width: double.infinity,
-            height: 230,
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  'imgs/${widget.artistName}.jpg',
-                ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 📸 Ảnh bìa nghệ sĩ
+            Container(
+              width: double.infinity,
+              height: 230,
+              decoration: BoxDecoration(
+                color: Colors.grey[800],
+              ),
+              child: Image.asset(
+                'imgs/${widget.artistName}.jpg',
                 fit: BoxFit.cover,
+                errorBuilder:
+                    (context, error, stackTrace) {
+                      return Center(
+                        child: Icon(
+                          Icons.person,
+                          size: 80,
+                          color: Colors.grey[600],
+                        ),
+                      );
+                    },
               ),
             ),
-          ),
 
-          const SizedBox(height: 16),
+            const SizedBox(height: 16),
 
           // ▶️ Nút phát tất cả
           Padding(
@@ -199,13 +209,14 @@ class _ArtistDetailScreenState
           const SizedBox(height: 12),
 
           // 🎵 Danh sách bài hát
-          Expanded(
-            child: ListView.builder(
-              itemCount: _songs.length,
-              itemBuilder: (context, index) {
-                final song = _songs[index];
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _songs.length,
+            itemBuilder: (context, index) {
+              final song = _songs[index];
 
-                return ListTile(
+              return ListTile(
                   contentPadding:
                       const EdgeInsets.symmetric(
                         horizontal: 16,
@@ -219,6 +230,24 @@ class _ArtistDetailScreenState
                       width: 55,
                       height: 55,
                       fit: BoxFit.cover,
+                      errorBuilder:
+                          (
+                            context,
+                            error,
+                            stackTrace,
+                          ) {
+                            return Container(
+                              width: 55,
+                              height: 55,
+                              color: Colors.grey[800],
+                              child: Icon(
+                                Icons.music_note,
+                                color:
+                                    Colors.grey[600],
+                                size: 30,
+                              ),
+                            );
+                          },
                     ),
                   ),
                   title: Text(
@@ -280,8 +309,8 @@ class _ArtistDetailScreenState
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
