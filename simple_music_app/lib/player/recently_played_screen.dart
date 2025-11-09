@@ -18,42 +18,8 @@ class _RecentlyPlayedScreenState
   void initState() {
     super.initState();
 
-    // If manager has no data, seed it with sample entries so the UI isn't empty.
-    final manager = RecentlyPlayedManager.instance;
-    if (manager.recentlyPlayedNotifier.value.isEmpty) {
-      final today = _formatDateKey(DateTime.now());
-      final yesterday = _formatDateKey(
-        DateTime.now().subtract(
-          const Duration(days: 1),
-        ),
-      );
-      manager.recentlyPlayedNotifier.value = {
-        today: [
-          SongModel(
-            title: "Hẹn Gặp Em Dưới Ánh Trăng",
-            artist: "Hurrykng, HieuThuHai, Manbo",
-            image:
-                "imgs/Hẹn_Gặp_Em_Dưới_Ánh_Trăng.jpg",
-          ),
-          SongModel(
-            title: "Perfect",
-            artist: "Shiki",
-            image: "imgs/Perfect.jpg",
-          ),
-        ],
-        yesterday: [
-          SongModel(
-            title: "Ngủ Một Mình",
-            artist: "HIEUTHUHAI",
-            image: "imgs/HIEUTHUHAI.jpg",
-          ),
-        ],
-      };
-    }
-  }
-
-  String _formatDateKey(DateTime date) {
-    return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
+    // Don't seed with sample data - let it populate naturally from playback
+    // This prevents "Unable to load asset" errors for placeholder images
   }
 
   void _addSong(SongModel song) {
@@ -246,12 +212,37 @@ class _RecentlyPlayedScreenState
                         leading: ClipRRect(
                           borderRadius:
                               BorderRadius.circular(8),
-                          child: Image.asset(
-                            song.image,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          ),
+                          child: song.image.startsWith('http')
+                              ? Image.network(
+                                  song.image,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Container(
+                                    width: 50,
+                                    height: 50,
+                                    color: Colors.grey[300],
+                                    child: const Icon(
+                                      Icons.music_note,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                )
+                              : Image.asset(
+                                  song.image,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (_, __, ___) => Container(
+                                    width: 50,
+                                    height: 50,
+                                    color: Colors.grey[300],
+                                    child: const Icon(
+                                      Icons.music_note,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
                         ),
                         title: Text(
                           song.title,
