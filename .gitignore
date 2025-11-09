@@ -117,3 +117,8 @@ app.*.symbols
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 !/dev/ci/**/Gemfile.lock
+
+# Ignore node modules and proxy server artifacts
+spotify-proxy/node_modules/
+spotify-proxy/package-lock.json
+spotify-proxy/npm-debug.log
