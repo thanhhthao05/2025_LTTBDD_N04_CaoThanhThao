@@ -21,7 +21,8 @@ class PlayerScreen extends StatefulWidget {
   });
 
   @override
-  State<PlayerScreen> createState() => _PlayerScreenState();
+  State<PlayerScreen> createState() =>
+      _PlayerScreenState();
 }
 
 class _PlayerScreenState extends State<PlayerScreen>
@@ -37,7 +38,8 @@ class _PlayerScreenState extends State<PlayerScreen>
   String? _errorMessage;
 
   late int currentIndex;
-  Map<String, String> get currentSong => widget.songs[currentIndex];
+  Map<String, String> get currentSong =>
+      widget.songs[currentIndex];
 
   @override
   void initState() {
@@ -94,7 +96,8 @@ class _PlayerScreenState extends State<PlayerScreen>
         });
 
         // Auto next song when finished
-        if (state.processingState == ProcessingState.completed) {
+        if (state.processingState ==
+            ProcessingState.completed) {
           if (isLoop) {
             _audioPlayer.seek(Duration.zero);
             _audioPlayer.play();
@@ -112,7 +115,8 @@ class _PlayerScreenState extends State<PlayerScreen>
     // Nếu không có preview URL, hiển thị thông báo lỗi
     if (audioUrl == null || audioUrl.isEmpty) {
       setState(() {
-        _errorMessage = 'Không có bản xem trước cho bài hát này';
+        _errorMessage =
+            'Không có bản xem trước cho bài hát này';
         totalTime = 0;
         isPlaying = false;
       });
@@ -156,7 +160,8 @@ class _PlayerScreenState extends State<PlayerScreen>
   Future<void> nextSong() async {
     await _audioPlayer.stop();
     setState(() {
-      currentIndex = (currentIndex + 1) % widget.songs.length;
+      currentIndex =
+          (currentIndex + 1) % widget.songs.length;
       currentTime = 0;
     });
     await _initAudioPlayer();
@@ -176,7 +181,8 @@ class _PlayerScreenState extends State<PlayerScreen>
     await _audioPlayer.stop();
     setState(() {
       currentIndex =
-          (currentIndex - 1 + widget.songs.length) % widget.songs.length;
+          (currentIndex - 1 + widget.songs.length) %
+          widget.songs.length;
       currentTime = 0;
     });
     await _initAudioPlayer();
@@ -214,7 +220,11 @@ class _PlayerScreenState extends State<PlayerScreen>
         errorBuilder: (_, __, ___) => Container(
           color: Colors.grey[900],
           child: const Center(
-            child: Icon(Icons.music_note, size: 100, color: Colors.white30),
+            child: Icon(
+              Icons.music_note,
+              size: 100,
+              color: Colors.white30,
+            ),
           ),
         ),
       );
@@ -225,7 +235,11 @@ class _PlayerScreenState extends State<PlayerScreen>
       errorBuilder: (_, __, ___) => Container(
         color: Colors.grey[900],
         child: const Center(
-          child: Icon(Icons.music_note, size: 100, color: Colors.white30),
+          child: Icon(
+            Icons.music_note,
+            size: 100,
+            color: Colors.white30,
+          ),
         ),
       ),
     );
@@ -246,7 +260,11 @@ class _PlayerScreenState extends State<PlayerScreen>
           width: width,
           height: height,
           color: Colors.grey[800],
-          child: const Icon(Icons.music_note, size: 80, color: Colors.white30),
+          child: const Icon(
+            Icons.music_note,
+            size: 80,
+            color: Colors.white30,
+          ),
         ),
       );
     }
@@ -259,7 +277,11 @@ class _PlayerScreenState extends State<PlayerScreen>
         width: width,
         height: height,
         color: Colors.grey[800],
-        child: const Icon(Icons.music_note, size: 80, color: Colors.white30),
+        child: const Icon(
+          Icons.music_note,
+          size: 80,
+          color: Colors.white30,
+        ),
       ),
     );
   }
@@ -274,13 +296,19 @@ class _PlayerScreenState extends State<PlayerScreen>
         children: [
           _buildBackgroundImage(song['img']!),
           BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
-            child: Container(color: Colors.black.withOpacity(0.5)),
+            filter: ImageFilter.blur(
+              sigmaX: 25,
+              sigmaY: 25,
+            ),
+            child: Container(
+              color: Colors.black.withOpacity(0.5),
+            ),
           ),
 
           SafeArea(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment:
+                  MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -288,7 +316,8 @@ class _PlayerScreenState extends State<PlayerScreen>
                     vertical: 10,
                   ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
                     children: [
                       IconButton(
                         icon: const Icon(
@@ -296,10 +325,13 @@ class _PlayerScreenState extends State<PlayerScreen>
                           color: Colors.white,
                           size: 32,
                         ),
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () =>
+                            Navigator.pop(context),
                       ),
                       Text(
-                        AppLocalizations.of(context).nowPlaying,
+                        AppLocalizations.of(
+                          context,
+                        ).nowPlaying,
                         style: const TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -310,12 +342,19 @@ class _PlayerScreenState extends State<PlayerScreen>
                       // 🔹 Menu ⋮ (SongOptionsMenu)
                       SongOptionsMenu(
                         song: {
-                          'title': currentSong['title'] ?? '',
-                          'artist': currentSong['artist'] ?? '',
-                          'img': currentSong['img'] ?? '',
+                          'title':
+                              currentSong['title'] ??
+                              '',
+                          'artist':
+                              currentSong['artist'] ??
+                              '',
+                          'img':
+                              currentSong['img'] ?? '',
                         },
                         onPlay: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(
                             SnackBar(
                               content: Text(
                                 AppLocalizations.of(
@@ -326,7 +365,9 @@ class _PlayerScreenState extends State<PlayerScreen>
                           );
                         },
                         onAddToPlaylist: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(
                             SnackBar(
                               content: Text(
                                 AppLocalizations.of(
@@ -337,7 +378,9 @@ class _PlayerScreenState extends State<PlayerScreen>
                           );
                         },
                         onDelete: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(
                             SnackBar(
                               content: Text(
                                 AppLocalizations.of(
@@ -356,7 +399,8 @@ class _PlayerScreenState extends State<PlayerScreen>
                 RotationTransition(
                   turns: _rotationController,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(180),
+                    borderRadius:
+                        BorderRadius.circular(180),
                     child: _buildAlbumImage(
                       song['img']!,
                       width: 280,
@@ -380,26 +424,94 @@ class _PlayerScreenState extends State<PlayerScreen>
                     const SizedBox(height: 5),
                     Text(
                       song['artist'] ?? "",
-                      style: const TextStyle(color: Colors.white70),
+                      style: const TextStyle(
+                        color: Colors.white70,
+                      ),
                     ),
                     if (_errorMessage != null) ...[
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 15),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 8,
+                        padding: const EdgeInsets.all(
+                          16,
                         ),
+                        margin:
+                            const EdgeInsets.symmetric(
+                              horizontal: 32,
+                            ),
                         decoration: BoxDecoration(
-                          color: Colors.red.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Text(
-                          _errorMessage!,
-                          style: const TextStyle(
-                            color: Colors.redAccent,
-                            fontSize: 12,
+                          color: Colors.orange
+                              .withOpacity(0.2),
+                          borderRadius:
+                              BorderRadius.circular(
+                                12,
+                              ),
+                          border: Border.all(
+                            color: Colors.orange
+                                .withOpacity(0.5),
+                            width: 1,
                           ),
-                          textAlign: TextAlign.center,
+                        ),
+                        child: Column(
+                          children: [
+                            const Icon(
+                              Icons.music_off,
+                              color: Colors.orange,
+                              size: 40,
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              _errorMessage!,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight:
+                                    FontWeight.w500,
+                              ),
+                              textAlign:
+                                  TextAlign.center,
+                            ),
+                            const SizedBox(height: 4),
+                            const Text(
+                              'Bài hát này chưa có file audio',
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 12,
+                              ),
+                              textAlign:
+                                  TextAlign.center,
+                            ),
+                            const SizedBox(height: 12),
+                            ElevatedButton.icon(
+                              onPressed: () =>
+                                  Navigator.pop(
+                                    context,
+                                  ),
+                              icon: const Icon(
+                                Icons.arrow_back,
+                                size: 18,
+                              ),
+                              label: const Text(
+                                'Chọn bài khác',
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    Colors.orange,
+                                foregroundColor:
+                                    Colors.white,
+                                padding:
+                                    const EdgeInsets.symmetric(
+                                      horizontal: 20,
+                                      vertical: 10,
+                                    ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.circular(
+                                        20,
+                                      ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -407,21 +519,31 @@ class _PlayerScreenState extends State<PlayerScreen>
 
                     // Nút chia sẻ & yêu thích
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50),
+                      padding:
+                          const EdgeInsets.symmetric(
+                            horizontal: 50,
+                          ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment:
+                            MainAxisAlignment
+                                .spaceBetween,
                         children: [
                           // Nút chia sẻ
                           IconButton(
                             icon: Icon(
                               Icons.share,
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white
+                                  .withOpacity(0.9),
                               size: 28,
                             ),
                             onPressed: () {
                               shareSong(
-                                title: song['title'] ?? 'Bài hát',
-                                artist: song['artist'] ?? 'Không rõ',
+                                title:
+                                    song['title'] ??
+                                    'Bài hát',
+                                artist:
+                                    song['artist'] ??
+                                    'Không rõ',
                               );
                             },
                           ),
@@ -431,7 +553,8 @@ class _PlayerScreenState extends State<PlayerScreen>
                             icon: Icon(
                               isFavorite
                                   ? Icons.favorite
-                                  : Icons.favorite_border_outlined,
+                                  : Icons
+                                        .favorite_border_outlined,
                               color: isFavorite
                                   ? Colors.purpleAccent
                                   : Colors.white70,
@@ -439,18 +562,30 @@ class _PlayerScreenState extends State<PlayerScreen>
                             ),
                             onPressed: () async {
                               final s = SongModel(
-                                title: currentSong['title'] ?? '',
-                                artist: currentSong['artist'] ?? '',
-                                image: currentSong['img'] ?? '',
+                                title:
+                                    currentSong['title'] ??
+                                    '',
+                                artist:
+                                    currentSong['artist'] ??
+                                    '',
+                                image:
+                                    currentSong['img'] ??
+                                    '',
                               );
 
                               // Nếu bài đang là yêu thích → xóa
-                              if (await FavoriteManager.isFavorite(s)) {
-                                await FavoriteManager.removeFavorite(s);
+                              if (await FavoriteManager.isFavorite(
+                                s,
+                              )) {
+                                await FavoriteManager.removeFavorite(
+                                  s,
+                                );
                                 setState(() {
                                   isFavorite = false;
                                 });
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(
                                   const SnackBar(
                                     content: Text(
                                       'Đã xóa khỏi danh sách yêu thích ❤️',
@@ -459,11 +594,15 @@ class _PlayerScreenState extends State<PlayerScreen>
                                 );
                               } else {
                                 // Nếu chưa có → thêm
-                                await FavoriteManager.addFavorite(s);
+                                await FavoriteManager.addFavorite(
+                                  s,
+                                );
                                 setState(() {
                                   isFavorite = true;
                                 });
-                                ScaffoldMessenger.of(context).showSnackBar(
+                                ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(
                                   const SnackBar(
                                     content: Text(
                                       'Đã thêm vào danh sách yêu thích ❤️',
@@ -481,25 +620,39 @@ class _PlayerScreenState extends State<PlayerScreen>
 
                 // Thanh tiến trình
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                  ),
                   child: Column(
                     children: [
                       Slider(
                         value: currentTime.clamp(
                           0.0,
-                          totalTime > 0 ? totalTime : 1.0,
+                          totalTime > 0
+                              ? totalTime
+                              : 1.0,
                         ),
                         min: 0,
-                        max: totalTime > 0 ? totalTime : 1.0,
+                        max: totalTime > 0
+                            ? totalTime
+                            : 1.0,
                         onChanged: (v) async {
-                          setState(() => currentTime = v);
-                          await _audioPlayer.seek(Duration(seconds: v.toInt()));
+                          setState(
+                            () => currentTime = v,
+                          );
+                          await _audioPlayer.seek(
+                            Duration(
+                              seconds: v.toInt(),
+                            ),
+                          );
                         },
                         activeColor: Colors.white,
                         inactiveColor: Colors.white24,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment:
+                            MainAxisAlignment
+                                .spaceBetween,
                         children: [
                           Text(
                             formatTime(currentTime),
@@ -523,14 +676,19 @@ class _PlayerScreenState extends State<PlayerScreen>
 
                 // Nút điều khiển nhạc
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 25, top: 5),
+                  padding: const EdgeInsets.only(
+                    bottom: 25,
+                    top: 5,
+                  ),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceEvenly,
                     children: [
                       IconButton(
                         icon: Icon(
                           FontAwesomeIcons.shuffle,
-                          color: Colors.purpleAccent.withOpacity(0.8),
+                          color: Colors.purpleAccent
+                              .withOpacity(0.8),
                           size: 22,
                         ),
                         onPressed: () {},
@@ -546,10 +704,15 @@ class _PlayerScreenState extends State<PlayerScreen>
                       GestureDetector(
                         onTap: () async {
                           if (_errorMessage != null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
+                            ScaffoldMessenger.of(
+                              context,
+                            ).showSnackBar(
                               SnackBar(
-                                content: Text(_errorMessage!),
-                                backgroundColor: Colors.red,
+                                content: Text(
+                                  _errorMessage!,
+                                ),
+                                backgroundColor:
+                                    Colors.red,
                               ),
                             );
                             return;
@@ -562,7 +725,8 @@ class _PlayerScreenState extends State<PlayerScreen>
                         },
                         child: Icon(
                           isPlaying
-                              ? Icons.pause_circle_filled
+                              ? Icons
+                                    .pause_circle_filled
                               : Icons.play_circle_fill,
                           color: Colors.white,
                           size: 80,
@@ -581,10 +745,13 @@ class _PlayerScreenState extends State<PlayerScreen>
                           FontAwesomeIcons.repeat,
                           color: isLoop
                               ? Colors.purpleAccent
-                              : Colors.white.withOpacity(0.7),
+                              : Colors.white
+                                    .withOpacity(0.7),
                           size: 22,
                         ),
-                        onPressed: () => setState(() => isLoop = !isLoop),
+                        onPressed: () => setState(
+                          () => isLoop = !isLoop,
+                        ),
                       ),
                     ],
                   ),

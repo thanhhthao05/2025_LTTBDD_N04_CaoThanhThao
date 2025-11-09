@@ -212,36 +212,55 @@ class _RecentlyPlayedScreenState
                         leading: ClipRRect(
                           borderRadius:
                               BorderRadius.circular(8),
-                          child: song.image.startsWith('http')
+                          child:
+                              song.image.startsWith(
+                                'http',
+                              )
                               ? Image.network(
                                   song.image,
                                   width: 50,
                                   height: 50,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Container(
-                                    width: 50,
-                                    height: 50,
-                                    color: Colors.grey[300],
-                                    child: const Icon(
-                                      Icons.music_note,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
+                                  errorBuilder:
+                                      (
+                                        _,
+                                        __,
+                                        ___,
+                                      ) => Container(
+                                        width: 50,
+                                        height: 50,
+                                        color: Colors
+                                            .grey[300],
+                                        child: const Icon(
+                                          Icons
+                                              .music_note,
+                                          color: Colors
+                                              .grey,
+                                        ),
+                                      ),
                                 )
                               : Image.asset(
                                   song.image,
                                   width: 50,
                                   height: 50,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (_, __, ___) => Container(
-                                    width: 50,
-                                    height: 50,
-                                    color: Colors.grey[300],
-                                    child: const Icon(
-                                      Icons.music_note,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
+                                  errorBuilder:
+                                      (
+                                        _,
+                                        __,
+                                        ___,
+                                      ) => Container(
+                                        width: 50,
+                                        height: 50,
+                                        color: Colors
+                                            .grey[300],
+                                        child: const Icon(
+                                          Icons
+                                              .music_note,
+                                          color: Colors
+                                              .grey,
+                                        ),
+                                      ),
                                 ),
                         ),
                         title: Text(
